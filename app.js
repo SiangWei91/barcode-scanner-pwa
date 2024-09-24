@@ -1,7 +1,5 @@
 const scriptUrl = 'https://script.google.com/macros/s/AKfycbxtkp0U6W1YL9ixCfFERGAkgVNnhatwhGoBkLSWBfg0BhtvFlru6tz2Lc8IpZTIQHLPzA/exec';
 let productList = {};
-let barcodeBuffer = '';
-let barcodeTimeout;
 
 async function submitDataToGoogleSheet(barcodeData, productName) {
     try {
@@ -62,32 +60,6 @@ async function loadProductList() {
     }
 }
 
-function handleBarcodeInput(event) {
-    clearTimeout(barcodeTimeout);
-    
-    // Ignore common control keys
-    if (['Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'Tab'].includes(event.key)) {
-        return;
-    }
-    
-    if (event.key === 'Enter') {
-        if (barcodeBuffer) {
-            processBarcode(barcodeBuffer);
-            barcodeBuffer = '';
-        }
-    } else {
-        barcodeBuffer += event.key;
-    }
-    
-    // Set a timeout to process the barcode if no new input for 50ms
-    barcodeTimeout = setTimeout(() => {
-        if (barcodeBuffer) {
-            processBarcode(barcodeBuffer);
-            barcodeBuffer = '';
-        }
-    }, 50);
-}
-
 async function refreshApp() {
     console.log('Refreshing app...');
     try {
@@ -99,9 +71,21 @@ async function refreshApp() {
     }
 }
 
+function handleBarcodeInput() {
+    const input = document.getElementById('barcodeInput');
+    const barcode = input.value.trim();
+    
+    if (barcode) {
+        processBarcode(barcode);
+        input.value = ''; // Clear the input for the next scan
+    }
+}
+
 async function initApp() {
     await loadProductList();
-    document.addEventListener('keydown', handleBarcodeInput);
+    const input = document.getElementById('barcodeInput');
+    input.addEventListener('change', handleBarcodeInput);
+    input.addEventListener('blur', () => setTimeout(() => input.focus(), 0));
 }
 
 // Call initApp when the page loads
