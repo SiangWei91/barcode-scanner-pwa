@@ -36,17 +36,18 @@
       }
     </style>
   </head>
-   <body>
+  <body>
     <h1>Scan a Barcode</h1>
     <button onclick="focusInput()">Scan</button>
     
+    <!-- Input field for the barcode scanner -->
     <input type="text" id="barcodeInput" oninput="processBarcode()" autofocus placeholder="Scan here">
     <p>Scanned Barcode: <span id="scannedValue"></span></p>
-    <p>Product Name: <span id="productName"></span></p>
     
+    <!-- New submit button -->
     <button onclick="submitBarcode()">Submit to Google Sheet</button>
-    <button onclick="refreshProductData()">Refresh Product Data</button>
 
+    <!-- Include the app.js file -->
     <script src="app.js"></script>
     <script>
       // Service worker registration
