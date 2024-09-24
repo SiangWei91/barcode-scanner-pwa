@@ -3,7 +3,7 @@ let productData = null;
 // Function to load the JSON file
 async function loadProductData() {
   try {
-    const response = await fetch('/storage/downloads/products.json');
+    const response = await fetch('/storage/emulated/0/Download/products.json');
     productData = await response.json();
     console.log('Product data loaded successfully');
   } catch (error) {
