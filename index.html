@@ -7,23 +7,6 @@
     <meta name="theme-color" content="#000000">
     <link rel="manifest" href="manifest.json">
     <title>Barcode Scanner</title>
-
-    <script>
-      function focusInput() {
-        document.getElementById('barcodeInput').focus();
-      }
-
-      function processBarcode() {
-        const barcode = document.getElementById('barcodeInput').value;
-        // Call your Google Script function to process the barcode
-        google.script.run.processBarcode(barcode);
-        // Display the scanned barcode value
-        document.getElementById('scannedValue').innerText = barcode;
-        // Clear the input after processing
-        document.getElementById('barcodeInput').value = '';
-      }
-    </script>
-
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -32,18 +15,15 @@
         text-align: center;
         padding: 50px;
       }
-
       h1 {
         color: #000;
       }
-
       input[type="text"] {
         padding: 10px;
         font-size: 18px;
         width: 80%;
         margin: 20px 0;
       }
-
       button {
         padding: 10px 20px;
         font-size: 16px;
@@ -52,6 +32,7 @@
         color: #fff;
         border: none;
         border-radius: 5px;
+        margin: 5px;
       }
     </style>
   </head>
@@ -61,7 +42,24 @@
     
     <!-- Input field for the barcode scanner -->
     <input type="text" id="barcodeInput" oninput="processBarcode()" autofocus placeholder="Scan here">
-
     <p>Scanned Barcode: <span id="scannedValue"></span></p>
+    
+    <!-- New submit button -->
+    <button onclick="submitBarcode()">Submit to Google Sheet</button>
+
+    <!-- Include the app.js file -->
+    <script src="app.js"></script>
+    <script>
+      // Service worker registration
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(function(registration) {
+            console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch(function(error) {
+            console.log('Service Worker registration failed:', error);
+          });
+      }
+    </script>
   </body>
 </html>
