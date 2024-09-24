@@ -59,23 +59,41 @@ async function loadProductList() {
 }
 
 // Function to initialize the app
-async function initApp() {
-    let storedProductList = localStorage.getItem('productList');
-    if (!storedProductList) {
-        productList = await loadProductList();
-    } else {
-        productList = JSON.parse(storedProductList);
+async function loadProductList() {
+    try {
+        const response = await fetch('/barcode-scanner-pwa/productList.json');
+        const text = await response.text(); // Get the raw text first
+        console.log('Raw JSON:', text); // Log the raw JSON
+        
+        try {
+            const data = JSON.parse(text);
+            localStorage.setItem('productList', JSON.stringify(data));
+            return data;
+        } catch (parseError) {
+            console.error('JSON Parse Error:', parseError);
+            console.error('Error position:', parseError.message);
+            // Attempt to identify the problematic part of the JSON
+            const errorPosition = parseInt(parseError.message.match(/\d+/)[0]);
+            console.error('Problematic part:', text.substring(Math.max(0, errorPosition - 20), errorPosition + 20));
+            throw parseError;
+        }
+    } catch (error) {
+        console.error('Error loading product list:', error);
+        alert('Error loading product list. Check the console for details.');
+        return null;
     }
 }
 
-// Call initApp when the page loads
-window.addEventListener('load', initApp);
-
 // Function to refresh product list and service worker
 async function refreshApp() {
-    productList = await loadProductList();
-    if (productList) {
-        alert('Product list updated successfully!');
+    try {
+        productList = await loadProductList();
+        if (productList) {
+            alert('Product list updated successfully!');
+        }
+    } catch (error) {
+        console.error('Error refreshing product list:', error);
+        alert('Error refreshing product list. Check the console for details.');
     }
 
     if ('serviceWorker' in navigator) {
