@@ -9,12 +9,13 @@ self.addEventListener('install', function(event) {
         '/barcode-scanner-pwa/manifest.json',
         '/barcode-scanner-pwa/icons/icon-192x192.png',
         '/barcode-scanner-pwa/icons/icon-512x512.png'
-      ]);
+      ]).catch(function(error) {
+        console.error('Cache addAll error:', error);
+      });
     })
   );
 });
 
-// Fetch the resources from the cache or network
 self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request).then(function(response) {
