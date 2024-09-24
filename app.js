@@ -2,13 +2,14 @@ const scriptUrl = 'https://script.google.com/macros/s/AKfycbxtkp0U6W1YL9ixCfFERG
 
 let productList = {};
 
-async function submitDataToGoogleSheet(barcodeData) {
+async function submitDataToGoogleSheet(barcodeData, productName) {
     try {
         const response = await fetch(scriptUrl, {
             method: 'POST',
             mode: 'no-cors',
             body: JSON.stringify({
-                barcode: barcodeData
+                barcode: barcodeData,
+                productName: productName
             }),
             headers: {
                 'Content-Type': 'application/json'
@@ -16,10 +17,10 @@ async function submitDataToGoogleSheet(barcodeData) {
         });
         
         console.log('Data submitted successfully');
-        alert('Barcode submitted successfully!');
+        alert('Barcode and product name submitted successfully!');
     } catch (error) {
         console.error('Error submitting data:', error);
-        alert('Error submitting barcode. Please try again.');
+        alert('Error submitting data. Please try again.');
     }
 }
 
@@ -36,8 +37,9 @@ function processBarcode() {
 
 function submitBarcode() {
     const barcode = document.getElementById('scannedValue').innerText;
+    const productName = document.getElementById('productName').innerText;
     if (barcode) {
-        submitDataToGoogleSheet(barcode);
+        submitDataToGoogleSheet(barcode, productName);
     } else {
         alert('Please scan a barcode first.');
     }
