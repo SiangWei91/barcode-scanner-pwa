@@ -2,25 +2,7 @@ const scriptUrl = 'https://script.google.com/macros/s/AKfycbxtkp0U6W1YL9ixCfFERG
 let productList = {};
 
 async function submitDataToGoogleSheet(barcodeData, productName) {
-    try {
-        const response = await fetch(scriptUrl, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify({
-                barcode: barcodeData,
-                productName: productName
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        console.log('Data submitted successfully');
-        alert('Barcode and product name submitted successfully!');
-    } catch (error) {
-        console.error('Error submitting data:', error);
-        alert('Error submitting data. Please try again.');
-    }
+    // ... (keep this function as is)
 }
 
 function focusInput() {
@@ -37,17 +19,18 @@ function processBarcode() {
 }
 
 function submitBarcode() {
-    const barcode = document.getElementById('scannedValue').innerText;
-    const productName = document.getElementById('productName').innerText;
-    if (barcode) {
-        submitDataToGoogleSheet(barcode, productName);
-    } else {
-        alert('Please scan a barcode first.');
-    }
+    // ... (keep this function as is)
 }
 
 async function loadProductList() {
     try {
+        const storedList = localStorage.getItem('productList');
+        if (storedList) {
+            productList = JSON.parse(storedList);
+            console.log('Loaded product list from local storage:', productList);
+            return productList;
+        }
+
         const timestamp = new Date().getTime();
         const response = await fetch(`/barcode-scanner-pwa/productList.json?t=${timestamp}`, {
             cache: 'no-store'
@@ -57,13 +40,11 @@ async function loadProductList() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        const text = await response.text();
-        console.log('Raw JSON:', text);
-        
-        const data = JSON.parse(text);
+        const data = await response.json();
         localStorage.setItem('productList', JSON.stringify(data));
-        console.log('Loaded product list:', data);
-        return data;
+        productList = data;
+        console.log('Loaded product list from server:', productList);
+        return productList;
     } catch (error) {
         console.error('Error loading product list:', error);
         alert('Error loading product list. Check the console for details.');
@@ -72,17 +53,19 @@ async function loadProductList() {
 }
 
 async function initApp() {
-    productList = await loadProductList();
-    if (!productList) {
+    await loadProductList();
+    if (Object.keys(productList).length === 0) {
         console.error('Failed to load product list');
         alert('Failed to load product list. Please refresh the page.');
+    } else {
+        console.log('App initialized with product list:', productList);
     }
 }
 
 async function refreshApp() {
     console.log('Refreshing app...');
-    productList = await loadProductList();
-    if (productList) {
+    await loadProductList();
+    if (Object.keys(productList).length > 0) {
         console.log('Product list updated successfully:', productList);
         alert('Product list updated successfully!');
     } else {
