@@ -1,5 +1,7 @@
 const scriptUrl = 'https://script.google.com/macros/s/AKfycbxtkp0U6W1YL9ixCfFERGAkgVNnhatwhGoBkLSWBfg0BhtvFlru6tz2Lc8IpZTIQHLPzA/exec';
 let productList = {};
+let barcodeBuffer = '';
+let barcodeTimeout;
 
 async function submitDataToGoogleSheet(barcodeData, productName) {
     try {
@@ -23,25 +25,9 @@ async function submitDataToGoogleSheet(barcodeData, productName) {
     }
 }
 
-function focusInput() {
-    document.getElementById('barcodeInput').focus();
-}
-
-function loadProductListFromLocalStorage() {
-    const storedList = localStorage.getItem('productList');
-    if (storedList) {
-        productList = JSON.parse(storedList);
-        console.log('Loaded product list from localStorage:', productList);
-    } else {
-        console.log('No product list found in localStorage');
-    }
-}
-
-function processBarcode() {
-    const barcode = document.getElementById('barcodeInput').value;
+function processBarcode(barcode) {
     console.log('Processing barcode:', barcode);
     console.log('Current product list:', productList);
-    loadProductListFromLocalStorage(); // Reload the list every time
     const productName = productList[barcode] || 'Product not found';
     console.log('Found product name:', productName);
     document.getElementById('scannedValue').innerText = barcode;
@@ -76,30 +62,46 @@ async function loadProductList() {
     }
 }
 
-async function initApp() {
-    loadProductListFromLocalStorage();
-    await loadProductList(); // This will update localStorage
-    loadProductListFromLocalStorage(); // Load the updated list into memory
+function handleBarcodeInput(event) {
+    clearTimeout(barcodeTimeout);
+    
+    // Ignore common control keys
+    if (['Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'Tab'].includes(event.key)) {
+        return;
+    }
+    
+    if (event.key === 'Enter') {
+        if (barcodeBuffer) {
+            processBarcode(barcodeBuffer);
+            barcodeBuffer = '';
+        }
+    } else {
+        barcodeBuffer += event.key;
+    }
+    
+    // Set a timeout to process the barcode if no new input for 50ms
+    barcodeTimeout = setTimeout(() => {
+        if (barcodeBuffer) {
+            processBarcode(barcodeBuffer);
+            barcodeBuffer = '';
+        }
+    }, 50);
 }
 
 async function refreshApp() {
     console.log('Refreshing app...');
     try {
-        const response = await fetch('/barcode-scanner-pwa/productList.json', {
-            cache: 'no-store'
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        localStorage.setItem('productList', JSON.stringify(data));
-        productList = data;
-        console.log('Loaded and stored new product list:', productList);
+        await loadProductList();
         alert('Product list updated successfully. Please scan again.');
     } catch (error) {
         console.error('Error refreshing product list:', error);
         alert('Error refreshing product list. Please check your connection and try again.');
     }
+}
+
+async function initApp() {
+    await loadProductList();
+    document.addEventListener('keydown', handleBarcodeInput);
 }
 
 // Call initApp when the page loads
