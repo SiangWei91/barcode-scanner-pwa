@@ -45,19 +45,6 @@ function submitBarcode() {
     }
 }
 
-// Function to load product list from JSON file
-async function loadProductList() {
-    try {
-        const response = await fetch('/barcode-scanner-pwa/productList.json');
-        const data = await response.json();
-        localStorage.setItem('productList', JSON.stringify(data));
-        return data;
-    } catch (error) {
-        console.error('Error loading product list:', error);
-        return null;
-    }
-}
-
 // Function to initialize the app
 async function loadProductList() {
     try {
