@@ -3,11 +3,12 @@ self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open('barcode-scanner-cache').then(function(cache) {
       return cache.addAll([
-        '/index.html',
-        '/manifest.json',
-        '/service-worker.js',
-        '/icons/icon-192x192.png',
-        '/icons/icon-512x512.png'
+        '/barcode-scanner-pwa/',
+        '/barcode-scanner-pwa/index.html',
+        '/barcode-scanner-pwa/app.js',
+        '/barcode-scanner-pwa/manifest.json',
+        '/barcode-scanner-pwa/icons/icon-192x192.png',
+        '/barcode-scanner-pwa/icons/icon-512x512.png'
       ]);
     })
   );
