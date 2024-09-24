@@ -1,5 +1,4 @@
 const scriptUrl = 'https://script.google.com/macros/s/AKfycbxtkp0U6W1YL9ixCfFERGAkgVNnhatwhGoBkLSWBfg0BhtvFlru6tz2Lc8IpZTIQHLPzA/exec';
-
 let productList = {};
 
 async function submitDataToGoogleSheet(barcodeData, productName) {
@@ -30,6 +29,8 @@ function focusInput() {
 
 function processBarcode() {
     const barcode = document.getElementById('barcodeInput').value;
+    console.log('Processing barcode:', barcode);
+    console.log('Current product list:', productList);
     const productName = productList[barcode] || 'Product not found';
     document.getElementById('scannedValue').innerText = barcode;
     document.getElementById('productName').innerText = productName;
@@ -45,25 +46,24 @@ function submitBarcode() {
     }
 }
 
-// Function to initialize the app
 async function loadProductList() {
     try {
-        const response = await fetch('/barcode-scanner-pwa/productList.json');
-        const text = await response.text(); // Get the raw text first
-        console.log('Raw JSON:', text); // Log the raw JSON
+        const timestamp = new Date().getTime();
+        const response = await fetch(`/barcode-scanner-pwa/productList.json?t=${timestamp}`, {
+            cache: 'no-store'
+        });
         
-        try {
-            const data = JSON.parse(text);
-            localStorage.setItem('productList', JSON.stringify(data));
-            return data;
-        } catch (parseError) {
-            console.error('JSON Parse Error:', parseError);
-            console.error('Error position:', parseError.message);
-            // Attempt to identify the problematic part of the JSON
-            const errorPosition = parseInt(parseError.message.match(/\d+/)[0]);
-            console.error('Problematic part:', text.substring(Math.max(0, errorPosition - 20), errorPosition + 20));
-            throw parseError;
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
+        const text = await response.text();
+        console.log('Raw JSON:', text);
+        
+        const data = JSON.parse(text);
+        localStorage.setItem('productList', JSON.stringify(data));
+        console.log('Loaded product list:', data);
+        return data;
     } catch (error) {
         console.error('Error loading product list:', error);
         alert('Error loading product list. Check the console for details.');
@@ -71,16 +71,23 @@ async function loadProductList() {
     }
 }
 
-// Function to refresh product list and service worker
+async function initApp() {
+    productList = await loadProductList();
+    if (!productList) {
+        console.error('Failed to load product list');
+        alert('Failed to load product list. Please refresh the page.');
+    }
+}
+
 async function refreshApp() {
-    try {
-        productList = await loadProductList();
-        if (productList) {
-            alert('Product list updated successfully!');
-        }
-    } catch (error) {
-        console.error('Error refreshing product list:', error);
-        alert('Error refreshing product list. Check the console for details.');
+    console.log('Refreshing app...');
+    productList = await loadProductList();
+    if (productList) {
+        console.log('Product list updated successfully:', productList);
+        alert('Product list updated successfully!');
+    } else {
+        console.error('Failed to update product list');
+        alert('Failed to update product list. Please try again.');
     }
 
     if ('serviceWorker' in navigator) {
@@ -91,3 +98,6 @@ async function refreshApp() {
         });
     }
 }
+
+// Call initApp when the page loads
+window.addEventListener('load', initApp);
