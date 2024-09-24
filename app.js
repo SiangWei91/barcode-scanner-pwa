@@ -84,9 +84,22 @@ async function initApp() {
 
 async function refreshApp() {
     console.log('Refreshing app...');
-    await loadProductList();
-    loadProductListFromLocalStorage();
-    alert('Product list updated. Please scan again.');
+    try {
+        const response = await fetch('/barcode-scanner-pwa/productList.json', {
+            cache: 'no-store'
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        localStorage.setItem('productList', JSON.stringify(data));
+        productList = data;
+        console.log('Loaded and stored new product list:', productList);
+        alert('Product list updated successfully. Please scan again.');
+    } catch (error) {
+        console.error('Error refreshing product list:', error);
+        alert('Error refreshing product list. Please check your connection and try again.');
+    }
 }
 
 // Call initApp when the page loads
