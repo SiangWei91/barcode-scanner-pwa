@@ -8,29 +8,47 @@
     <link rel="manifest" href="/barcode-scanner-pwa/manifest.json">
     <title>Barcode Scanner</title>
     <style>
-      /* Your existing styles here */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        text-align: center;
+        padding: 50px;
+      }
+      h1 {
+        color: #000;
+      }
+      input[type="text"] {
+        padding: 10px;
+        font-size: 18px;
+        width: 80%;
+        margin: 20px 0;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        margin: 5px;
+      }
     </style>
   </head>
   <body>
     <h1>Scan a Barcode</h1>
     <button onclick="focusInput()">Scan</button>
     
+    <!-- Input field for the barcode scanner -->
     <input type="text" id="barcodeInput" oninput="processBarcode()" autofocus placeholder="Scan here">
     <p>Scanned Barcode: <span id="scannedValue"></span></p>
     <p>Product Name: <span id="productName"></span></p>
     
+    <!-- New submit button -->
     <button onclick="submitBarcode()">Submit to Google Sheet</button>
-
-    <script>
-      // Add this before loading app.js
-      function addScript(src) {
-        var script = document.createElement('script');
-        script.src = src + '?v=' + new Date().getTime();
-        document.body.appendChild(script);
-      }
-      addScript('app.js');
-    </script>
-    
+    <!-- Include the app.js file -->
+    <script src="app.js"></script>
     <script>
       // Service worker registration
       if ('serviceWorker' in navigator) {
