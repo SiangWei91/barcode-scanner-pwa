@@ -18,37 +18,47 @@ const productList = {
 };
 
 function initScanner() {
-  const barcodeInput = document.getElementById('barcodeInput');
   const scannedValue = document.getElementById('scannedValue');
   const productName = document.getElementById('productName');
-  let scanTimeout;
+  let barcodeBuffer = '';
+  let lastKeyTime = 0;
+  const BARCODE_TIMEOUT = 20; // ms
 
-  function updateProduct() {
-    const barcode = barcodeInput.value;
+  function processBarcode(barcode) {
     scannedValue.textContent = barcode;
     const product = productList[barcode];
     if (product) {
       productName.textContent = product;
-      // Clear the input after a short delay
-      setTimeout(() => {
-        barcodeInput.value = '';
-        barcodeInput.focus();
-      }, 100);
     } else {
       productName.textContent = 'Product not found';
     }
+    // Clear the buffer after processing
+    barcodeBuffer = '';
   }
 
-  barcodeInput.addEventListener('input', function() {
-    clearTimeout(scanTimeout);
-    scanTimeout = setTimeout(updateProduct, 100); // Delay of 100ms
-  });
-
   document.addEventListener('keydown', function(event) {
+    const currentTime = new Date().getTime();
+    
     if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
       event.preventDefault();
       console.log('Scanner button pressed');
-      barcodeInput.focus();
+      return;
+    }
+
+    // If it's been more than BARCODE_TIMEOUT ms since the last keypress, reset the buffer
+    if (currentTime - lastKeyTime > BARCODE_TIMEOUT) {
+      barcodeBuffer = '';
+    }
+
+    // Add the new character to the buffer
+    barcodeBuffer += event.key;
+
+    // Update the last key time
+    lastKeyTime = currentTime;
+
+    // If the enter key is pressed, process the barcode
+    if (event.keyCode === 13) {
+      processBarcode(barcodeBuffer);
     }
   });
 }
@@ -59,7 +69,6 @@ function submitBarcode() {
 }
 
 function refreshApp() {
-  document.getElementById('barcodeInput').value = '';
   document.getElementById('scannedValue').textContent = '';
   document.getElementById('productName').textContent = '';
   console.log('App refreshed');
