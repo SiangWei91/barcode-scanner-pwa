@@ -18,63 +18,55 @@ const productList = {
 };
 
 function initScanner() {
-  const barcodeInput = document.getElementById('barcodeInput');
   const scannedValue = document.getElementById('scannedValue');
   const productName = document.getElementById('productName');
-  let scanTimeout;
 
-  function updateProduct() {
-    const barcode = barcodeInput.value;
-    sessionStorage.setItem('lastScannedBarcode', barcode);
-    scannedValue.textContent = barcode;
-    matchProduct();
-
-    // Clear the input after a short delay
-    setTimeout(() => {
-      barcodeInput.value = '';
-      barcodeInput.focus();
-    }, 100);
-  }
-
-  function matchProduct() {
-    const barcode = sessionStorage.getItem('lastScannedBarcode');
-    const product = productList[barcode];
-    if (product) {
-      productName.textContent = product;
-    } else {
-      productName.textContent = 'Product not found';
+  function captureBarcode() {
+    // Simulate barcode capture
+    const barcode = prompt("Enter barcode number:");
+    if (barcode) {
+      sessionStorage.setItem('capturedBarcode', barcode);
+      updateProduct();
     }
   }
 
-  barcodeInput.addEventListener('input', function() {
-    clearTimeout(scanTimeout);
-    scanTimeout = setTimeout(updateProduct, 100); // Delay of 100ms
-  });
+  function updateProduct() {
+    const barcode = sessionStorage.getItem('capturedBarcode');
+    if (barcode) {
+      scannedValue.textContent = barcode;
+      const product = productList[barcode];
+      if (product) {
+        productName.textContent = product;
+      } else {
+        productName.textContent = 'Product not found';
+      }
+    }
+  }
 
   document.addEventListener('keydown', function(event) {
     if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
       event.preventDefault();
       console.log('Scanner button pressed');
-      barcodeInput.focus();
+      captureBarcode();
     }
   });
 
-  // Check for existing barcode in session storage on page load
-  if (sessionStorage.getItem('lastScannedBarcode')) {
-    scannedValue.textContent = sessionStorage.getItem('lastScannedBarcode');
-    matchProduct();
-  }
+  // Call updateProduct on page load to display any previously captured barcode
+  updateProduct();
 }
 
 function submitBarcode() {
-  const barcode = sessionStorage.getItem('lastScannedBarcode');
-  console.log('Submitting barcode:', barcode);
-  alert('Barcode submitted to Google Sheet');
+  const barcode = sessionStorage.getItem('capturedBarcode');
+  if (barcode) {
+    console.log('Submitting barcode:', barcode);
+    alert('Barcode submitted to Google Sheet');
+  } else {
+    alert('No barcode captured');
+  }
 }
 
 function refreshApp() {
-  sessionStorage.removeItem('lastScannedBarcode');
-  document.getElementById('barcodeInput').value = '';
+  sessionStorage.removeItem('capturedBarcode');
   document.getElementById('scannedValue').textContent = '';
   document.getElementById('productName').textContent = '';
   console.log('App refreshed');
