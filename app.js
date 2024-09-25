@@ -4,12 +4,6 @@ const scriptUrl = 'https://script.google.com/macros/s/AKfycbxtkp0U6W1YL9ixCfFERG
 // Product list storage
 let productList = {};
 
-// PDA Scanner specific variables
-let scannedBarcode = '';
-let isScanning = false;
-let scanTimer;
-const SCAN_TIMEOUT = 50; // Adjust based on your scanner's speed
-
 // PDA Scanner button key codes
 const KEY_LSCAN = 622;
 const KEY_HSCAN = 621;
@@ -41,22 +35,24 @@ async function submitDataToGoogleSheet(barcodeData, productName) {
 // Function to process scanned barcode
 function processBarcode(barcode) {
     console.log('Processing barcode:', barcode);
-    console.log('Current product list:', productList);
     const productName = productList[barcode] || 'Product not found';
     console.log('Found product name:', productName);
     
     const scannedValueElement = document.getElementById('scannedValue');
     const productNameElement = document.getElementById('productName');
+    const barcodeInputElement = document.getElementById('barcodeInput');
     
-    if (scannedValueElement && productNameElement) {
+    if (scannedValueElement && productNameElement && barcodeInputElement) {
         scannedValueElement.innerText = barcode;
         productNameElement.innerText = productName;
+        barcodeInputElement.value = barcode;
         console.log('Updated DOM elements:', {
             scannedValue: scannedValueElement.innerText,
-            productName: productNameElement.innerText
+            productName: productNameElement.innerText,
+            barcodeInput: barcodeInputElement.value
         });
     } else {
-        console.error('Could not find scannedValue or productName elements in the DOM');
+        console.error('Could not find required elements in the DOM');
     }
 }
 
@@ -90,29 +86,6 @@ async function loadProductList() {
     }
 }
 
-// Function to refresh the app
-async function refreshApp() {
-    console.log('Refreshing app...');
-    try {
-        await loadProductList();
-        alert('Product list updated successfully. Please scan again.');
-    } catch (error) {
-        console.error('Error refreshing product list:', error);
-        alert('Error refreshing product list. Please check your connection and try again.');
-    }
-}
-
-// Function to handle manual barcode input
-function handleBarcodeInput() {
-    const input = document.getElementById('barcodeInput');
-    const barcode = input.value.trim();
-    
-    if (barcode) {
-        processBarcode(barcode);
-        input.value = ''; // Clear the input for the next scan
-    }
-}
-
 // Function to initialize PDA scanner
 function initScanner() {
     document.addEventListener('keydown', function(event) {
@@ -130,40 +103,19 @@ function initScanner() {
             if (input) {
                 input.focus();
             }
-            return;
-        }
-
-        // Handle barcode input
-        if (!isScanning) {
-            isScanning = true;
-            scannedBarcode = '';
-        }
-
-        if (event.key !== 'Enter') {
-            scannedBarcode += event.key;
-        }
-
-        clearTimeout(scanTimer);
-
-        scanTimer = setTimeout(function() {
-            if (scannedBarcode) {
-                console.log('Scanned barcode:', scannedBarcode);
-                processBarcode(scannedBarcode);
-                document.getElementById('barcodeInput').value = scannedBarcode;
+        } else if (event.key === 'Enter') {
+            const barcodeInput = document.getElementById('barcodeInput');
+            if (barcodeInput && barcodeInput.value) {
+                processBarcode(barcodeInput.value);
             }
-            isScanning = false;
-            scannedBarcode = '';
-        }, SCAN_TIMEOUT);
+        }
     });
 }
 
 // Function to initialize the app
 async function initApp() {
     await loadProductList();
-    console.log('Product list after initialization:', productList); // Debug line
-    const input = document.getElementById('barcodeInput');
-    input.addEventListener('change', handleBarcodeInput);
-    
+    console.log('Product list after initialization:', productList);
     initScanner(); // Initialize the PDA scanner functionality
 }
 
