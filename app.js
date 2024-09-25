@@ -21,6 +21,18 @@ function initScanner() {
   const barcodeInput = document.getElementById('barcodeInput');
   const scannedValue = document.getElementById('scannedValue');
   const productName = document.getElementById('productName');
+  let scanTimeout;
+
+  function updateProduct() {
+    const barcode = barcodeInput.value;
+    scannedValue.textContent = barcode;
+    productName.textContent = productList[barcode] || 'Product not found';
+  }
+
+  barcodeInput.addEventListener('input', function() {
+    clearTimeout(scanTimeout);
+    scanTimeout = setTimeout(updateProduct, 100); // Delay of 100ms
+  });
 
   document.addEventListener('keydown', function(event) {
     if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
@@ -30,12 +42,20 @@ function initScanner() {
       scannedValue.textContent = '';
       productName.textContent = '';
       barcodeInput.focus();
-    } else if (event.key === 'Enter') {
-      const barcode = barcodeInput.value;
-      scannedValue.textContent = barcode;
-      productName.textContent = productList[barcode] || 'Product not found';
     }
   });
+}
+
+function submitBarcode() {
+  console.log('Submitting barcode:', document.getElementById('barcodeInput').value);
+  alert('Barcode submitted to Google Sheet');
+}
+
+function refreshApp() {
+  document.getElementById('barcodeInput').value = '';
+  document.getElementById('scannedValue').textContent = '';
+  document.getElementById('productName').textContent = '';
+  console.log('App refreshed');
 }
 
 window.addEventListener('load', initScanner);
