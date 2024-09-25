@@ -22,7 +22,7 @@ function initScanner() {
   const barcodeInput = document.getElementById('barcodeInput');
   const productTable = document.getElementById('productTable').getElementsByTagName('tbody')[0];
   let scanTimeout;
-  let lastFocusedInput = null;
+  let isScanning = true;
 
   // Populate the table with product data
   for (const [barcode, product] of Object.entries(productList)) {
@@ -42,7 +42,7 @@ function initScanner() {
       if (quantityInput) {
         quantityInput.focus();
         quantityInput.select();
-        lastFocusedInput = quantityInput;
+        isScanning = false;
       }
       // Clear the input after a short delay
       setTimeout(() => {
@@ -64,16 +64,35 @@ function initScanner() {
     if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
       event.preventDefault();
       console.log('Scanner button pressed');
+      isScanning = true;
       barcodeInput.focus();
     }
   });
 
-  // Prevent barcode input from stealing focus
+  // Handle focus events
   document.addEventListener('focus', function(event) {
-    if (event.target === barcodeInput && lastFocusedInput) {
-      lastFocusedInput.focus();
+    if (event.target === barcodeInput) {
+      isScanning = true;
+    } else if (event.target.type === 'number') {
+      isScanning = false;
     }
   }, true);
+
+  // Handle click events
+  document.addEventListener('click', function(event) {
+    if (event.target === barcodeInput) {
+      isScanning = true;
+    } else if (event.target.type === 'number') {
+      isScanning = false;
+    }
+  }, true);
+
+  // Ensure barcode input gets focus when in scanning mode
+  setInterval(() => {
+    if (isScanning && document.activeElement !== barcodeInput) {
+      barcodeInput.focus();
+    }
+  }, 100);
 }
 
 function submitQuantities() {
