@@ -18,76 +18,65 @@ const productList = {
 };
 
 function initScanner() {
+  const barcodeInput = document.getElementById('barcodeInput');
   const scannedValue = document.getElementById('scannedValue');
   const productName = document.getElementById('productName');
-  const debugInfo = document.getElementById('debugInfo');
-  let barcodeBuffer = '';
-  let lastKeyTime = 0;
-  const BARCODE_TIMEOUT = 100; // Increased to 100ms for more leniency
+  let scanTimeout;
 
-  function processBarcode(barcode) {
+  function updateProduct() {
+    const barcode = barcodeInput.value;
+    sessionStorage.setItem('lastScannedBarcode', barcode);
     scannedValue.textContent = barcode;
-    debugInfo.textContent += `Processing barcode: ${barcode}\n`;
-    
+    matchProduct();
+
+    // Clear the input after a short delay
+    setTimeout(() => {
+      barcodeInput.value = '';
+      barcodeInput.focus();
+    }, 100);
+  }
+
+  function matchProduct() {
+    const barcode = sessionStorage.getItem('lastScannedBarcode');
     const product = productList[barcode];
     if (product) {
       productName.textContent = product;
-      debugInfo.textContent += `Product found: ${product}\n`;
     } else {
       productName.textContent = 'Product not found';
-      debugInfo.textContent += `Product not found for barcode: ${barcode}\n`;
     }
-    
-    // Clear the buffer after processing
-    barcodeBuffer = '';
   }
 
-  document.addEventListener('keydown', function(event) {
-    const currentTime = new Date().getTime();
-    
-    debugInfo.textContent += `Key pressed: ${event.key} (${event.keyCode})\n`;
+  barcodeInput.addEventListener('input', function() {
+    clearTimeout(scanTimeout);
+    scanTimeout = setTimeout(updateProduct, 100); // Delay of 100ms
+  });
 
+  document.addEventListener('keydown', function(event) {
     if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
       event.preventDefault();
-      debugInfo.textContent += 'Scanner button pressed\n';
-      return;
-    }
-
-    // If it's been more than BARCODE_TIMEOUT ms since the last keypress, reset the buffer
-    if (currentTime - lastKeyTime > BARCODE_TIMEOUT) {
-      debugInfo.textContent += `Buffer reset. Old buffer: ${barcodeBuffer}\n`;
-      barcodeBuffer = '';
-    }
-
-    // For 'unidentified' key, we'll use the keyCode instead
-    if (event.key === 'Unidentified') {
-      barcodeBuffer += event.keyCode;
-    } else {
-      barcodeBuffer += event.key;
-    }
-    debugInfo.textContent += `Current buffer: ${barcodeBuffer}\n`;
-
-    // Update the last key time
-    lastKeyTime = currentTime;
-
-    // Check if the buffer length matches any product barcode length
-    const barcodeLength = Object.keys(productList)[0].length;
-    if (barcodeBuffer.length === barcodeLength) {
-      debugInfo.textContent += 'Barcode length matched, processing barcode\n';
-      processBarcode(barcodeBuffer);
+      console.log('Scanner button pressed');
+      barcodeInput.focus();
     }
   });
+
+  // Check for existing barcode in session storage on page load
+  if (sessionStorage.getItem('lastScannedBarcode')) {
+    scannedValue.textContent = sessionStorage.getItem('lastScannedBarcode');
+    matchProduct();
+  }
 }
 
 function submitBarcode() {
-  console.log('Submitting barcode:', document.getElementById('scannedValue').textContent);
+  const barcode = sessionStorage.getItem('lastScannedBarcode');
+  console.log('Submitting barcode:', barcode);
   alert('Barcode submitted to Google Sheet');
 }
 
 function refreshApp() {
+  sessionStorage.removeItem('lastScannedBarcode');
+  document.getElementById('barcodeInput').value = '';
   document.getElementById('scannedValue').textContent = '';
   document.getElementById('productName').textContent = '';
-  document.getElementById('debugInfo').textContent = '';
   console.log('App refreshed');
 }
 
