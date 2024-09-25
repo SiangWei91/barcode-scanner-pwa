@@ -22,19 +22,21 @@ function initScanner() {
   const scannedValue = document.getElementById('scannedValue');
   const productName = document.getElementById('productName');
   let scanTimeout;
-  let lastScanTime = 0;
 
   function updateProduct() {
     const barcode = barcodeInput.value;
     scannedValue.textContent = barcode;
-    productName.textContent = productList[barcode] || 'Product not found';
-  }
-
-  function clearAndFocusInput() {
-    barcodeInput.value = '';
-    scannedValue.textContent = '';
-    productName.textContent = '';
-    barcodeInput.focus();
+    const product = productList[barcode];
+    if (product) {
+      productName.textContent = product;
+      // Clear the input after a short delay
+      setTimeout(() => {
+        barcodeInput.value = '';
+        barcodeInput.focus();
+      }, 100);
+    } else {
+      productName.textContent = 'Product not found';
+    }
   }
 
   barcodeInput.addEventListener('input', function() {
@@ -46,22 +48,13 @@ function initScanner() {
     if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
       event.preventDefault();
       console.log('Scanner button pressed');
-      
-      // Prevent multiple rapid scans
-      const now = Date.now();
-      if (now - lastScanTime < 1000) { // 1000ms debounce
-        return;
-      }
-      lastScanTime = now;
-
-      // Delay clear and focus to ensure it happens after the scanner input
-      setTimeout(clearAndFocusInput, 50);
+      barcodeInput.focus();
     }
   });
 }
 
 function submitBarcode() {
-  console.log('Submitting barcode:', document.getElementById('barcodeInput').value);
+  console.log('Submitting barcode:', document.getElementById('scannedValue').textContent);
   alert('Barcode submitted to Google Sheet');
 }
 
