@@ -18,48 +18,54 @@ const productList = {
 };
 
 function initScanner() {
-  const barcodeInput = document.getElementById('barcodeInput');
   const scannedValue = document.getElementById('scannedValue');
   const productName = document.getElementById('productName');
-  let scanTimeout;
 
-  function updateProduct() {
-    const barcode = barcodeInput.value;
-    scannedValue.textContent = barcode;
-    const product = productList[barcode];
-    if (product) {
-      productName.textContent = product;
-      // Clear the input after a short delay
-      setTimeout(() => {
-        barcodeInput.value = '';
-        barcodeInput.focus();
-      }, 100);
-    } else {
-      productName.textContent = 'Product not found';
-    }
+  // Simulate scanner input (replace this with actual scanner input method)
+  function simulateScannerInput(barcode) {
+    sessionStorage.setItem('lastBarcode', barcode);
+    updateProductDisplay();
   }
 
-  barcodeInput.addEventListener('input', function() {
-    clearTimeout(scanTimeout);
-    scanTimeout = setTimeout(updateProduct, 100); // Delay of 100ms
-  });
+  function updateProductDisplay() {
+    const barcode = sessionStorage.getItem('lastBarcode');
+    if (barcode) {
+      scannedValue.textContent = barcode;
+      const product = productList[barcode];
+      if (product) {
+        productName.textContent = product;
+      } else {
+        productName.textContent = 'Product not found';
+      }
+    } else {
+      scannedValue.textContent = '';
+      productName.textContent = '';
+    }
+  }
 
   document.addEventListener('keydown', function(event) {
     if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
       event.preventDefault();
       console.log('Scanner button pressed');
-      barcodeInput.focus();
+      // Here you would typically trigger your scanner to read a barcode
+      // For this example, we'll simulate a scan with a random product
+      const randomBarcode = Object.keys(productList)[Math.floor(Math.random() * Object.keys(productList).length)];
+      simulateScannerInput(randomBarcode);
     }
   });
+
+  // Check for last scanned barcode in session storage on page load
+  updateProductDisplay();
 }
 
 function submitBarcode() {
-  console.log('Submitting barcode:', document.getElementById('scannedValue').textContent);
+  const lastBarcode = sessionStorage.getItem('lastBarcode');
+  console.log('Submitting barcode:', lastBarcode);
   alert('Barcode submitted to Google Sheet');
 }
 
 function refreshApp() {
-  document.getElementById('barcodeInput').value = '';
+  sessionStorage.removeItem('lastBarcode');
   document.getElementById('scannedValue').textContent = '';
   document.getElementById('productName').textContent = '';
   console.log('App refreshed');
