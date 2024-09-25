@@ -1,4 +1,4 @@
-// PDA Scanner button key codes
+// We'll keep these for reference, but we won't rely on them exclusively
 const KEY_LSCAN = 622;
 const KEY_HSCAN = 621;
 const KEY_RSCAN = 623;
@@ -65,11 +65,20 @@ function initScanner() {
     scanTimeout = setTimeout(updateProduct, 100); // Delay of 100ms
   });
 
-  // Improved scanner button handling
+  // Improved key event handling
   document.addEventListener('keydown', function(event) {
-    if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
+    console.log('Key pressed: ', event.key, 'Key code: ', event.keyCode);
+    
+    // Check for scanner button presses or other relevant keys
+    if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN ||
+        event.key === 'F1' || event.key === 'F2' || event.key === 'F3') {
       event.preventDefault();
-      console.log('Scanner button pressed');
+      console.log('Potential scanner button pressed');
+      focusOnBarcodeInput();
+    }
+    
+    // Always focus on barcode input if it's not a quantity input
+    if (document.activeElement.type !== 'number') {
       focusOnBarcodeInput();
     }
   });
