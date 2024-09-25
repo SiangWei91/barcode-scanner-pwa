@@ -44,8 +44,20 @@ function processBarcode(barcode) {
     console.log('Current product list:', productList);
     const productName = productList[barcode] || 'Product not found';
     console.log('Found product name:', productName);
-    document.getElementById('scannedValue').innerText = barcode;
-    document.getElementById('productName').innerText = productName;
+    
+    const scannedValueElement = document.getElementById('scannedValue');
+    const productNameElement = document.getElementById('productName');
+    
+    if (scannedValueElement && productNameElement) {
+        scannedValueElement.innerText = barcode;
+        productNameElement.innerText = productName;
+        console.log('Updated DOM elements:', {
+            scannedValue: scannedValueElement.innerText,
+            productName: productNameElement.innerText
+        });
+    } else {
+        console.error('Could not find scannedValue or productName elements in the DOM');
+    }
 }
 
 // Function to submit barcode data
@@ -108,7 +120,10 @@ function initScanner() {
         if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
             event.preventDefault(); // Prevent default button behavior
             console.log('Scanner button pressed');
-            // You might want to add logic here to start listening for barcode input
+            // Clear previous scan results
+            document.getElementById('scannedValue').innerText = '';
+            document.getElementById('productName').innerText = '';
+            document.getElementById('barcodeInput').value = '';
             return;
         }
 
@@ -136,14 +151,26 @@ function initScanner() {
     });
 }
 
+// Function to focus on input
+function focusOnInput() {
+    const input = document.getElementById('barcodeInput');
+    if (input) {
+        input.focus();
+    }
+}
+
 // Function to initialize the app
 async function initApp() {
     await loadProductList();
+    console.log('Product list after initialization:', productList); // Debug line
     const input = document.getElementById('barcodeInput');
     input.addEventListener('change', handleBarcodeInput);
-    input.addEventListener('blur', () => setTimeout(() => input.focus(), 0));
+    input.addEventListener('blur', () => setTimeout(focusOnInput, 0));
     
     initScanner(); // Initialize the PDA scanner functionality
+    
+    // Initial focus on input
+    focusOnInput();
 }
 
 // Call initApp when the page loads
