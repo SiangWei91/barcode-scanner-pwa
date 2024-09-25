@@ -28,27 +28,25 @@
         border-radius: 5px;
         margin: 5px;
       }
-      #debugInfo {
-        text-align: left;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        background-color: #eee;
+      #barcodeInput {
         padding: 10px;
-        margin-top: 20px;
-        font-family: monospace;
+        font-size: 16px;
+        margin-bottom: 20px;
+        width: 80%;
+        max-width: 300px;
       }
     </style>
   </head>
   <body>
     <h1>Scan a Barcode</h1>
     
+    <input type="text" id="barcodeInput" placeholder="Enter barcode" autofocus>
+    
     <p>Scanned Barcode: <span id="scannedValue"></span></p>
     <p>Product Name: <span id="productName"></span></p>
     
     <button onclick="submitBarcode()">Submit to Google Sheet</button>
     <button onclick="refreshApp()">Refresh</button>
-    
-    <div id="debugInfo"></div>
     
     <script src="app.js"></script>
     <script>
