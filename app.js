@@ -3,6 +3,41 @@ const KEY_LSCAN = 622;
 const KEY_HSCAN = 621;
 const KEY_RSCAN = 623;
 
+// Product list storage
+let productList = {};
+
+// Function to load product list
+async function loadProductList() {
+    try {
+        const response = await fetch('/barcode-scanner-pwa/productList.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        productList = await response.json();
+        console.log('Loaded product list:', productList);
+    } catch (error) {
+        console.error('Error loading product list:', error);
+        alert('Error loading product list. Check the console for details.');
+    }
+}
+
+// Function to process scanned barcode
+function processBarcode(barcode) {
+    console.log('Processing barcode:', barcode);
+    const productName = productList[barcode] || 'Product not found';
+    console.log('Found product name:', productName);
+    
+    const scannedValueElement = document.getElementById('scannedValue');
+    const productNameElement = document.getElementById('productName');
+    
+    if (scannedValueElement && productNameElement) {
+        scannedValueElement.innerText = barcode;
+        productNameElement.innerText = productName;
+    } else {
+        console.error('Could not find required elements in the DOM');
+    }
+}
+
 // Function to initialize PDA scanner
 function initScanner() {
     document.addEventListener('keydown', function(event) {
@@ -12,22 +47,28 @@ function initScanner() {
             console.log('Scanner button pressed');
             
             // Clear previous scan results
-            document.getElementById('barcodeInput').value = '';
-            
-            // Focus on the input field when the scan button is pressed
-            const input = document.getElementById('barcodeInput');
-            if (input) {
-                input.focus();
+            const barcodeInput = document.getElementById('barcodeInput');
+            if (barcodeInput) {
+                barcodeInput.value = '';
+                barcodeInput.focus();
             }
+            
+            document.getElementById('scannedValue').innerText = '';
+            document.getElementById('productName').innerText = '';
         } else if (event.key === 'Enter') {
             const barcodeInput = document.getElementById('barcodeInput');
             if (barcodeInput && barcodeInput.value) {
-                console.log('Scanned barcode:', barcodeInput.value);
-                // You can add additional processing here if needed
+                processBarcode(barcodeInput.value);
             }
         }
     });
 }
 
-// Initialize the scanner when the page loads
-window.addEventListener('load', initScanner);
+// Function to initialize the app
+async function initApp() {
+    await loadProductList();
+    initScanner();
+}
+
+// Initialize the app when the page loads
+window.addEventListener('load', initApp);
