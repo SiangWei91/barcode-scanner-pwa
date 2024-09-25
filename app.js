@@ -124,6 +124,12 @@ function initScanner() {
             document.getElementById('scannedValue').innerText = '';
             document.getElementById('productName').innerText = '';
             document.getElementById('barcodeInput').value = '';
+            
+            // Focus on the input field when the scan button is pressed
+            const input = document.getElementById('barcodeInput');
+            if (input) {
+                input.focus();
+            }
             return;
         }
 
@@ -151,26 +157,14 @@ function initScanner() {
     });
 }
 
-// Function to focus on input
-function focusOnInput() {
-    const input = document.getElementById('barcodeInput');
-    if (input) {
-        input.focus();
-    }
-}
-
 // Function to initialize the app
 async function initApp() {
     await loadProductList();
     console.log('Product list after initialization:', productList); // Debug line
     const input = document.getElementById('barcodeInput');
     input.addEventListener('change', handleBarcodeInput);
-    input.addEventListener('blur', () => setTimeout(focusOnInput, 0));
     
     initScanner(); // Initialize the PDA scanner functionality
-    
-    // Initial focus on input
-    focusOnInput();
 }
 
 // Call initApp when the page loads
