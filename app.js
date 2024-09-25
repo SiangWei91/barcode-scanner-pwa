@@ -40,26 +40,41 @@ function processBarcode(barcode) {
 
 // Function to initialize PDA scanner
 function initScanner() {
+    let isScanning = false;
+    const barcodeInput = document.getElementById('barcodeInput');
+
     document.addEventListener('keydown', function(event) {
         // Check if it's a scanner button press
         if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
             event.preventDefault(); // Prevent default button behavior
             console.log('Scanner button pressed');
             
-            // Clear previous scan results
-            const barcodeInput = document.getElementById('barcodeInput');
-            if (barcodeInput) {
-                barcodeInput.value = '';
-                barcodeInput.focus();
+            if (isScanning) {
+                // If already scanning, process the current input
+                if (barcodeInput.value) {
+                    processBarcode(barcodeInput.value);
+                }
             }
             
+            // Clear previous scan results and focus on input
+            barcodeInput.value = '';
             document.getElementById('scannedValue').innerText = '';
             document.getElementById('productName').innerText = '';
-        } else if (event.key === 'Enter') {
-            const barcodeInput = document.getElementById('barcodeInput');
-            if (barcodeInput && barcodeInput.value) {
+            barcodeInput.focus();
+            
+            isScanning = true;
+        } else if (event.key === 'Enter' && isScanning) {
+            if (barcodeInput.value) {
                 processBarcode(barcodeInput.value);
             }
+            isScanning = false;
+        }
+    });
+
+    // Handle input changes during scanning
+    barcodeInput.addEventListener('input', function() {
+        if (isScanning && this.value.length > 0) {
+            processBarcode(this.value);
         }
     });
 }
