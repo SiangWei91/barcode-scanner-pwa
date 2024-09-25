@@ -51,8 +51,13 @@ function initScanner() {
     } else {
       alert('Product not found');
       barcodeInput.value = '';
-      barcodeInput.focus();
+      focusOnBarcodeInput();
     }
+  }
+
+  function focusOnBarcodeInput() {
+    isScanning = true;
+    barcodeInput.focus();
   }
 
   barcodeInput.addEventListener('input', function() {
@@ -64,16 +69,13 @@ function initScanner() {
     if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
       event.preventDefault();
       console.log('Scanner button pressed');
-      isScanning = true;
-      barcodeInput.focus();
+      focusOnBarcodeInput();
     }
   });
 
   // Handle focus events
   document.addEventListener('focus', function(event) {
-    if (event.target === barcodeInput) {
-      isScanning = true;
-    } else if (event.target.type === 'number') {
+    if (event.target.type === 'number') {
       isScanning = false;
     }
   }, true);
@@ -81,18 +83,21 @@ function initScanner() {
   // Handle click events
   document.addEventListener('click', function(event) {
     if (event.target === barcodeInput) {
-      isScanning = true;
+      focusOnBarcodeInput();
     } else if (event.target.type === 'number') {
       isScanning = false;
     }
   }, true);
 
-  // Ensure barcode input gets focus when in scanning mode
+  // Continuously check and set focus to barcode input when in scanning mode
   setInterval(() => {
     if (isScanning && document.activeElement !== barcodeInput) {
       barcodeInput.focus();
     }
   }, 100);
+
+  // Initially focus on barcode input
+  focusOnBarcodeInput();
 }
 
 function submitQuantities() {
@@ -110,12 +115,14 @@ function submitQuantities() {
 }
 
 function refreshApp() {
-  document.getElementById('barcodeInput').value = '';
+  const barcodeInput = document.getElementById('barcodeInput');
+  barcodeInput.value = '';
   const inputs = document.querySelectorAll('input[type="number"]');
   inputs.forEach(input => {
     input.value = '';
   });
   console.log('App refreshed');
+  barcodeInput.focus();
 }
 
 window.addEventListener('load', initScanner);
