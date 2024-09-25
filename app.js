@@ -1,8 +1,3 @@
-// We'll keep these for reference, but we won't rely on them exclusively
-const KEY_LSCAN = 622;
-const KEY_HSCAN = 621;
-const KEY_RSCAN = 623;
-
 // Updated product list
 const productList = {
   "8887151402608": { itemCode: "20500", name: "SAI DOU FISH CAKE (L)", packingSize: "10pcs" },
@@ -35,24 +30,23 @@ function initScanner() {
   }
 
   function updateProduct() {
-    const barcode = barcodeInput.value;
-    const product = productList[barcode];
-    if (product) {
-      const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
-      if (quantityInput) {
-        quantityInput.focus();
-        quantityInput.select();
-        isScanning = false;
+    const barcode = barcodeInput.value.trim();
+    if (barcode) {
+      const product = productList[barcode];
+      if (product) {
+        const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
+        if (quantityInput) {
+          quantityInput.focus();
+          quantityInput.select();
+          isScanning = false;
+        }
+      } else {
+        alert('Product not found');
       }
-      // Clear the input after a short delay
-      setTimeout(() => {
-        barcodeInput.value = '';
-      }, 100);
-    } else {
-      alert('Product not found');
+      // Clear the input after processing
       barcodeInput.value = '';
-      focusOnBarcodeInput();
     }
+    focusOnBarcodeInput();
   }
 
   function focusOnBarcodeInput() {
@@ -60,27 +54,10 @@ function initScanner() {
     barcodeInput.focus();
   }
 
+  // Monitor input changes
   barcodeInput.addEventListener('input', function() {
     clearTimeout(scanTimeout);
     scanTimeout = setTimeout(updateProduct, 100); // Delay of 100ms
-  });
-
-  // Improved key event handling
-  document.addEventListener('keydown', function(event) {
-    console.log('Key pressed: ', event.key, 'Key code: ', event.keyCode);
-    
-    // Check for scanner button presses or other relevant keys
-    if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN ||
-        event.key === 'F1' || event.key === 'F2' || event.key === 'F3') {
-      event.preventDefault();
-      console.log('Potential scanner button pressed');
-      focusOnBarcodeInput();
-    }
-    
-    // Always focus on barcode input if it's not a quantity input
-    if (document.activeElement.type !== 'number') {
-      focusOnBarcodeInput();
-    }
   });
 
   // Handle focus events
@@ -98,6 +75,8 @@ function initScanner() {
       focusOnBarcodeInput();
     } else if (event.target.type === 'number') {
       isScanning = false;
+    } else {
+      focusOnBarcodeInput();
     }
   }, true);
 
@@ -124,6 +103,7 @@ function submitQuantities() {
   });
   console.log('Submitting quantities:', quantities);
   alert('Quantities submitted');
+  focusOnBarcodeInput();
 }
 
 function refreshApp() {
@@ -135,6 +115,11 @@ function refreshApp() {
   });
   console.log('App refreshed');
   focusOnBarcodeInput();
+}
+
+function focusOnBarcodeInput() {
+  const barcodeInput = document.getElementById('barcodeInput');
+  barcodeInput.focus();
 }
 
 window.addEventListener('load', initScanner);
