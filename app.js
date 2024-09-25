@@ -65,6 +65,7 @@ function initScanner() {
     scanTimeout = setTimeout(updateProduct, 100); // Delay of 100ms
   });
 
+  // Improved scanner button handling
   document.addEventListener('keydown', function(event) {
     if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
       event.preventDefault();
@@ -77,6 +78,8 @@ function initScanner() {
   document.addEventListener('focus', function(event) {
     if (event.target.type === 'number') {
       isScanning = false;
+    } else if (event.target === barcodeInput) {
+      isScanning = true;
     }
   }, true);
 
@@ -122,7 +125,7 @@ function refreshApp() {
     input.value = '';
   });
   console.log('App refreshed');
-  barcodeInput.focus();
+  focusOnBarcodeInput();
 }
 
 window.addEventListener('load', initScanner);
