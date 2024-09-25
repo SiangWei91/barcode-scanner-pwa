@@ -22,15 +22,15 @@ function initScanner() {
   const barcodeInput = document.getElementById('barcodeInput');
   const productTable = document.getElementById('productTable').getElementsByTagName('tbody')[0];
   let scanTimeout;
+  let lastFocusedInput = null;
 
   // Populate the table with product data
   for (const [barcode, product] of Object.entries(productList)) {
     const row = productTable.insertRow();
     row.innerHTML = `
-      <td>${product.itemCode}</td>
       <td>${product.name}</td>
       <td>${product.packingSize}</td>
-      <td><input type="number" min="0" value="0" data-barcode="${barcode}"></td>
+      <td><input type="number" min="0" data-barcode="${barcode}"></td>
     `;
   }
 
@@ -42,14 +42,16 @@ function initScanner() {
       if (quantityInput) {
         quantityInput.focus();
         quantityInput.select();
+        lastFocusedInput = quantityInput;
       }
       // Clear the input after a short delay
       setTimeout(() => {
         barcodeInput.value = '';
-        barcodeInput.focus();
       }, 100);
     } else {
       alert('Product not found');
+      barcodeInput.value = '';
+      barcodeInput.focus();
     }
   }
 
@@ -65,6 +67,13 @@ function initScanner() {
       barcodeInput.focus();
     }
   });
+
+  // Prevent barcode input from stealing focus
+  document.addEventListener('focus', function(event) {
+    if (event.target === barcodeInput && lastFocusedInput) {
+      lastFocusedInput.focus();
+    }
+  }, true);
 }
 
 function submitQuantities() {
@@ -72,9 +81,9 @@ function submitQuantities() {
   const inputs = document.querySelectorAll('input[type="number"]');
   inputs.forEach(input => {
     const barcode = input.getAttribute('data-barcode');
-    const quantity = parseInt(input.value, 10);
-    if (quantity > 0) {
-      quantities[barcode] = quantity;
+    const quantity = input.value.trim();
+    if (quantity !== '') {
+      quantities[barcode] = parseInt(quantity, 10);
     }
   });
   console.log('Submitting quantities:', quantities);
@@ -85,7 +94,7 @@ function refreshApp() {
   document.getElementById('barcodeInput').value = '';
   const inputs = document.querySelectorAll('input[type="number"]');
   inputs.forEach(input => {
-    input.value = 0;
+    input.value = '';
   });
   console.log('App refreshed');
 }
