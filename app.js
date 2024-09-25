@@ -3,87 +3,39 @@ const KEY_LSCAN = 622;
 const KEY_HSCAN = 621;
 const KEY_RSCAN = 623;
 
-// Product list storage
-let productList = {};
+// Product list
+const productList = {
+  "8887151402608": "SAI DOU FISH CAKE (L)",
+  "8887151301109": "IMITATION SURIMI SCALLOP",
+  "8887151201102": "SEAFOOD STICK",
+  "8887151502117": "YONG TAU FOO",
+  "8887151402059": "FRIED LARGE FISH CAKE",
+  "8887151402103": "FRIED ROUND FISH CAKE (L)",
+  "8887151706034": "CHICKEN NGOH HIANG",
+  "8887151403100": "COOKED FISH BALL",
+  "8887151202109": "IMITATION CRAB BALL",
+  "8887151705044": "FLAT NGOH HIANG"
+};
 
-// Function to load product list
-async function loadProductList() {
-    try {
-        const response = await fetch('/barcode-scanner-pwa/productList.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        productList = await response.json();
-        console.log('Loaded product list:', productList);
-    } catch (error) {
-        console.error('Error loading product list:', error);
-        alert('Error loading product list. Check the console for details.');
-    }
-}
-
-// Function to process scanned barcode
-function processBarcode(barcode) {
-    console.log('Processing barcode:', barcode);
-    const productName = productList[barcode] || 'Product not found';
-    console.log('Found product name:', productName);
-    
-    const scannedValueElement = document.getElementById('scannedValue');
-    const productNameElement = document.getElementById('productName');
-    
-    if (scannedValueElement && productNameElement) {
-        scannedValueElement.innerText = barcode;
-        productNameElement.innerText = productName;
-    } else {
-        console.error('Could not find required elements in the DOM');
-    }
-}
-
-// Function to initialize PDA scanner
 function initScanner() {
-    let isScanning = false;
-    const barcodeInput = document.getElementById('barcodeInput');
+  const barcodeInput = document.getElementById('barcodeInput');
+  const scannedValue = document.getElementById('scannedValue');
+  const productName = document.getElementById('productName');
 
-    document.addEventListener('keydown', function(event) {
-        // Check if it's a scanner button press
-        if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
-            event.preventDefault(); // Prevent default button behavior
-            console.log('Scanner button pressed');
-            
-            if (isScanning) {
-                // If already scanning, process the current input
-                if (barcodeInput.value) {
-                    processBarcode(barcodeInput.value);
-                }
-            }
-            
-            // Clear previous scan results and focus on input
-            barcodeInput.value = '';
-            document.getElementById('scannedValue').innerText = '';
-            document.getElementById('productName').innerText = '';
-            barcodeInput.focus();
-            
-            isScanning = true;
-        } else if (event.key === 'Enter' && isScanning) {
-            if (barcodeInput.value) {
-                processBarcode(barcodeInput.value);
-            }
-            isScanning = false;
-        }
-    });
-
-    // Handle input changes during scanning
-    barcodeInput.addEventListener('input', function() {
-        if (isScanning && this.value.length > 0) {
-            processBarcode(this.value);
-        }
-    });
+  document.addEventListener('keydown', function(event) {
+    if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
+      event.preventDefault();
+      console.log('Scanner button pressed');
+      barcodeInput.value = '';
+      scannedValue.textContent = '';
+      productName.textContent = '';
+      barcodeInput.focus();
+    } else if (event.key === 'Enter') {
+      const barcode = barcodeInput.value;
+      scannedValue.textContent = barcode;
+      productName.textContent = productList[barcode] || 'Product not found';
+    }
+  });
 }
 
-// Function to initialize the app
-async function initApp() {
-    await loadProductList();
-    initScanner();
-}
-
-// Initialize the app when the page loads
-window.addEventListener('load', initApp);
+window.addEventListener('load', initScanner);
