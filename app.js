@@ -20,18 +20,24 @@ const productList = {
 function initScanner() {
   const scannedValue = document.getElementById('scannedValue');
   const productName = document.getElementById('productName');
+  const debugInfo = document.getElementById('debugInfo');
   let barcodeBuffer = '';
   let lastKeyTime = 0;
-  const BARCODE_TIMEOUT = 20; // ms
+  const BARCODE_TIMEOUT = 50; // Increased to 50ms for more leniency
 
   function processBarcode(barcode) {
     scannedValue.textContent = barcode;
+    debugInfo.textContent += `Processing barcode: ${barcode}\n`;
+    
     const product = productList[barcode];
     if (product) {
       productName.textContent = product;
+      debugInfo.textContent += `Product found: ${product}\n`;
     } else {
       productName.textContent = 'Product not found';
+      debugInfo.textContent += `Product not found for barcode: ${barcode}\n`;
     }
+    
     // Clear the buffer after processing
     barcodeBuffer = '';
   }
@@ -39,25 +45,30 @@ function initScanner() {
   document.addEventListener('keydown', function(event) {
     const currentTime = new Date().getTime();
     
+    debugInfo.textContent += `Key pressed: ${event.key} (${event.keyCode})\n`;
+
     if (event.keyCode === KEY_LSCAN || event.keyCode === KEY_HSCAN || event.keyCode === KEY_RSCAN) {
       event.preventDefault();
-      console.log('Scanner button pressed');
+      debugInfo.textContent += 'Scanner button pressed\n';
       return;
     }
 
     // If it's been more than BARCODE_TIMEOUT ms since the last keypress, reset the buffer
     if (currentTime - lastKeyTime > BARCODE_TIMEOUT) {
+      debugInfo.textContent += `Buffer reset. Old buffer: ${barcodeBuffer}\n`;
       barcodeBuffer = '';
     }
 
     // Add the new character to the buffer
     barcodeBuffer += event.key;
+    debugInfo.textContent += `Current buffer: ${barcodeBuffer}\n`;
 
     // Update the last key time
     lastKeyTime = currentTime;
 
     // If the enter key is pressed, process the barcode
     if (event.keyCode === 13) {
+      debugInfo.textContent += 'Enter key pressed, processing barcode\n';
       processBarcode(barcodeBuffer);
     }
   });
@@ -71,6 +82,7 @@ function submitBarcode() {
 function refreshApp() {
   document.getElementById('scannedValue').textContent = '';
   document.getElementById('productName').textContent = '';
+  document.getElementById('debugInfo').textContent = '';
   console.log('App refreshed');
 }
 
