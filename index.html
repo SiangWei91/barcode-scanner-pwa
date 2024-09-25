@@ -13,7 +13,7 @@
         background-color: #f4f4f4;
         color: #333;
         text-align: center;
-        padding: 50px;
+        padding: 20px;
       }
       h1 {
         color: #000;
@@ -35,17 +35,44 @@
         width: 80%;
         max-width: 300px;
       }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      input[type="number"] {
+        width: 60px;
+      }
     </style>
   </head>
   <body>
     <h1>Scan a Barcode</h1>
     
-    <input type="text" id="barcodeInput" placeholder="Enter barcode" autofocus>
+    <input type="text" id="barcodeInput" placeholder="Scan barcode" autofocus>
     
-    <p>Scanned Barcode: <span id="scannedValue"></span></p>
-    <p>Product Name: <span id="productName"></span></p>
+    <table id="productTable">
+      <thead>
+        <tr>
+          <th>Item Code</th>
+          <th>Product Name</th>
+          <th>Packing Size</th>
+          <th>Quantity</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Table rows will be populated by JavaScript -->
+      </tbody>
+    </table>
     
-    <button onclick="submitBarcode()">Submit to Google Sheet</button>
+    <button onclick="submitQuantities()">Submit Quantities</button>
     <button onclick="refreshApp()">Refresh</button>
     
     <script src="app.js"></script>
