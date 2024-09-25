@@ -23,7 +23,7 @@ function initScanner() {
   const debugInfo = document.getElementById('debugInfo');
   let barcodeBuffer = '';
   let lastKeyTime = 0;
-  const BARCODE_TIMEOUT = 50; // Increased to 50ms for more leniency
+  const BARCODE_TIMEOUT = 100; // Increased to 100ms for more leniency
 
   function processBarcode(barcode) {
     scannedValue.textContent = barcode;
@@ -59,16 +59,21 @@ function initScanner() {
       barcodeBuffer = '';
     }
 
-    // Add the new character to the buffer
-    barcodeBuffer += event.key;
+    // For 'unidentified' key, we'll use the keyCode instead
+    if (event.key === 'Unidentified') {
+      barcodeBuffer += event.keyCode;
+    } else {
+      barcodeBuffer += event.key;
+    }
     debugInfo.textContent += `Current buffer: ${barcodeBuffer}\n`;
 
     // Update the last key time
     lastKeyTime = currentTime;
 
-    // If the enter key is pressed, process the barcode
-    if (event.keyCode === 13) {
-      debugInfo.textContent += 'Enter key pressed, processing barcode\n';
+    // Check if the buffer length matches any product barcode length
+    const barcodeLength = Object.keys(productList)[0].length;
+    if (barcodeBuffer.length === barcodeLength) {
+      debugInfo.textContent += 'Barcode length matched, processing barcode\n';
       processBarcode(barcodeBuffer);
     }
   });
