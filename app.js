@@ -46,8 +46,7 @@ function initScanner() {
       // Clear the input after processing
       barcodeInput.value = '';
     }
-    focusOnBarcodeInput();
-  }
+
 
   function focusOnBarcodeInput() {
     isScanning = true;
