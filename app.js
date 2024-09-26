@@ -57,7 +57,7 @@ function initScanner() {
     const dataBarcode = barcode || `no-barcode-${index}`;
     row.innerHTML = `
       <td>${product.name}</td>
-      <td>${product.packingSize}</td>
+      <td class="packing-size">${product.packingSize}</td>
       <td><input type="number" min="0" data-barcode="${dataBarcode}"></td>
     `;
     index++;
@@ -165,7 +165,7 @@ function formatDate(date) {
 
 // Add this function to update the date display
 function updateDateDisplay() {
-  const dateDisplay = document.getElementById('dateDisplay');
+  const dateDisplay = document.getElementById('currentDate');
   if (dateDisplay) {
     dateDisplay.textContent = formatDate(new Date());
   }
