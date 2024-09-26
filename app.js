@@ -164,14 +164,33 @@ function formatDate(date) {
   return `${day}/${month}/${year}`;
 }
 
-function updateDateDisplay() {
+function formatTime(date) {
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  return `${hours}:${minutes} ${ampm}`;
+}
+
+function updateDateTimeDisplay() {
   const dateDisplay = document.getElementById('currentDate');
+  const timeDisplay = document.getElementById('currentTime');
+  const now = new Date();
+  
   if (dateDisplay) {
-    dateDisplay.textContent = formatDate(new Date());
+    dateDisplay.textContent = formatDate(now);
+  }
+  
+  if (timeDisplay) {
+    timeDisplay.textContent = formatTime(now);
   }
 }
 
+// Update the date and time every second
+setInterval(updateDateTimeDisplay, 1000);
+
 window.addEventListener('load', () => {
   initScanner();
-  updateDateDisplay();
+  updateDateTimeDisplay();
 });
