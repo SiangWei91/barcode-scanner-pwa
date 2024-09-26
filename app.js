@@ -70,10 +70,9 @@ function initScanner() {
   function updateProduct() {
     const barcode = barcodeInput.value.trim();
     if (barcode) {
-      const product = Object.entries(productList).find(([code, prod]) => code === barcode || prod.itemCode === barcode);
+      const product = productList[barcode];
       if (product) {
-        const [matchedBarcode, matchedProduct] = product;
-        const quantityInput = document.querySelector(`input[data-item-code="${matchedProduct.itemCode}"]`);
+        const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
         if (quantityInput) {
           quantityInput.focus();
           quantityInput.select();
@@ -87,6 +86,8 @@ function initScanner() {
     }
     focusOnBarcodeInput();
   }
+
+
 
   function focusOnBarcodeInput() {
     isScanning = true;
