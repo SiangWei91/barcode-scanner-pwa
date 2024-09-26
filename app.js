@@ -1,4 +1,4 @@
-/ Updated product list
+// Updated product list
 const productList = {
   "": { itemCode: "49101", name: "FISH CAKE (L)", packingSize: "20'S" },
   "": { itemCode: "49102", name: "FISH CAKE (M)", packingSize: "20'S" },
@@ -83,11 +83,6 @@ function initScanner() {
     focusOnBarcodeInput();
   }
 
-  function focusOnBarcodeInput() {
-    isScanning = true;
-    barcodeInput.focus();
-  }
-
   // Monitor input changes
   barcodeInput.addEventListener('input', function() {
     clearTimeout(scanTimeout);
@@ -163,7 +158,6 @@ function formatDate(date) {
   return `${day}/${month}/${year}`;
 }
 
-// Add this function to update the date display
 function updateDateDisplay() {
   const dateDisplay = document.getElementById('currentDate');
   if (dateDisplay) {
