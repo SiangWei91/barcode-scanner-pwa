@@ -57,7 +57,7 @@ function initScanner() {
   // Monitor input changes
   barcodeInput.addEventListener('input', function() {
     clearTimeout(scanTimeout);
-    scanTimeout = setTimeout(updateProduct, 100); // Delay of 100ms
+    scanTimeout = setTimeout(updateProduct, 300); // Delay of 100ms
   });
 
   // Handle focus events
