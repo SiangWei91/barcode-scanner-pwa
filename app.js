@@ -1,4 +1,4 @@
-// Updated product list
+// Complete product list including products without barcodes
 const productList = {
   "": { itemCode: "49101", name: "FISH CAKE (L)", packingSize: "20'S" },
   "": { itemCode: "49102", name: "FISH CAKE (M)", packingSize: "20'S" },
@@ -50,38 +50,30 @@ function initScanner() {
   let scanTimeout;
   let isScanning = true;
 
-  // Populate the table with product data
-  let index = 0;
+  // Populate the table with all product data
   for (const [barcode, product] of Object.entries(productList)) {
     const row = productTable.insertRow();
-    const dataBarcode = barcode || `no-barcode-${index}`;
     row.innerHTML = `
       <td>${product.name}</td>
       <td class="packing-size">${product.packingSize}</td>
-      <td><input type="number" min="0" data-barcode="${dataBarcode}"></td>
+      <td><input type="number" min="0" data-barcode="${barcode}"></td>
     `;
-    index++;
   }
 
   function updateProduct() {
     const barcode = barcodeInput.value.trim();
-    if (barcode) {
-      const product = Object.entries(productList).find(([key, value]) => key === barcode || value.itemCode === barcode);
-      if (product) {
-        const [key, value] = product;
-        const dataBarcode = key || `no-barcode-${Object.keys(productList).indexOf(key)}`;
-        const quantityInput = document.querySelector(`input[data-barcode="${dataBarcode}"]`);
-        if (quantityInput) {
-          quantityInput.focus();
-          quantityInput.select();
-          isScanning = false;
-        }
-      } else {
-        alert('Product not found');
+    if (barcode && productList[barcode]) {
+      const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
+      if (quantityInput) {
+        quantityInput.focus();
+        quantityInput.select();
+        isScanning = false;
       }
-      // Clear the input after processing
-      barcodeInput.value = '';
+    } else if (barcode) {
+      alert('Product not found');
     }
+    // Clear the input after processing
+    barcodeInput.value = '';
     focusOnBarcodeInput();
   }
 
