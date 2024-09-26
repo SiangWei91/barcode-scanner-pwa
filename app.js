@@ -52,25 +52,28 @@ function initScanner() {
 
   // Set current date
   const currentDateElement = document.getElementById('currentDate');
-  const options = { timeZone: 'Asia/Singapore', year: 'numeric', month: 'long', day: 'numeric' };
-  currentDateElement.textContent = new Date().toLocaleDateString('en-SG', options);
+  const options = { timeZone: 'Asia/Singapore', year: 'numeric', month: '2-digit', day: '2-digit' };
+  const currentDate = new Date().toLocaleDateString('en-SG', options);
+  const [month, day, year] = currentDate.split('/');
+  currentDateElement.textContent = `${day}/${month}/${year}`;
 
   // Populate the table with all product data
-  for (const product of Object.values(productList)) {
+  for (const [barcode, product] of Object.entries(productList)) {
     const row = productTable.insertRow();
     row.innerHTML = `
       <td>${product.name}</td>
       <td class="packing-size">${product.packingSize}</td>
-      <td><input type="number" min="0" data-item-code="${product.itemCode}"></td>
+      <td><input type="number" min="0" data-item-code="${product.itemCode}" data-barcode="${barcode}"></td>
     `;
   }
 
   function updateProduct() {
     const barcode = barcodeInput.value.trim();
     if (barcode) {
-      const product = Object.values(productList).find(p => p.itemCode === barcode);
+      const product = Object.entries(productList).find(([code, prod]) => code === barcode || prod.itemCode === barcode);
       if (product) {
-        const quantityInput = document.querySelector(`input[data-item-code="${product.itemCode}"]`);
+        const [matchedBarcode, matchedProduct] = product;
+        const quantityInput = document.querySelector(`input[data-item-code="${matchedProduct.itemCode}"]`);
         if (quantityInput) {
           quantityInput.focus();
           quantityInput.select();
