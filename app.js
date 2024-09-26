@@ -196,6 +196,21 @@ window.addEventListener('load', () => {
 });
 
 
+function showLoadingOverlay() {
+  document.getElementById('loadingOverlay').style.display = 'flex';
+}
+
+function hideLoadingOverlay() {
+  document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+function showToast(message) {
+  const toast = document.getElementById('toastNotification');
+  toast.textContent = message;
+  toast.className = 'show';
+  setTimeout(() => { toast.className = toast.className.replace('show', ''); }, 3000);
+}
+
 function submitQuantities() {
   const quantities = [];
   const inputs = document.querySelectorAll('input[type="number"]');
@@ -219,9 +234,10 @@ function submitQuantities() {
   });
 
   if (quantities.length > 0) {
+    showLoadingOverlay();
     sendToGoogleScript(quantities);
   } else {
-    alert('No quantities entered');
+    showToast('No quantities entered');
   }
 }
 
@@ -237,11 +253,13 @@ function sendToGoogleScript(data) {
     body: JSON.stringify(data)
   })
   .then(() => {
-    document.getElementById('submitStatus').textContent = 'Data submitted successfully!';
+    hideLoadingOverlay();
+    showToast('Data submitted successfully!');
     refreshApp();
   })
   .catch(error => {
     console.error('Error:', error);
-    document.getElementById('submitStatus').textContent = 'Error submitting data. Please try again.';
+    hideLoadingOverlay();
+    showToast('Error submitting data. Please try again.');
   });
 }
