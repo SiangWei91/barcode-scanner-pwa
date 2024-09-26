@@ -1,4 +1,4 @@
-/ Updated product list
+// Updated product list
 const productList = {
   "": { itemCode: "49101", name: "FISH CAKE (L)", packingSize: "20'S" },
   "": { itemCode: "49102", name: "FISH CAKE (M)", packingSize: "20'S" },
