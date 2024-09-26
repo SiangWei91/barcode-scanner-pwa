@@ -63,16 +63,18 @@ button {
     </style>
   </head>
   <body>
-    <h1>Scan a Barcode</h1>
+    <h1>CR3 Stock Take</h1>
+
+    <div id="currentDate"></div>
     
     <input type="text" id="barcodeInput" placeholder="Scan barcode" autofocus>
     
     <table id="productTable">
       <thead>
         <tr>
-          <th>Product Name</th>
-          <th>Packing Size</th>
-          <th>Quantity</th>
+          <th>Product</th>
+          <th>Packing</th>
+          <th>Qty</th>
         </tr>
       </thead>
       <tbody>
