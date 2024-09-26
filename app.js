@@ -194,3 +194,54 @@ window.addEventListener('load', () => {
   initScanner();
   updateDateTimeDisplay();
 });
+
+
+function submitQuantities() {
+  const quantities = [];
+  const inputs = document.querySelectorAll('input[type="number"]');
+  const currentDate = formatDate(new Date());
+  const currentTime = formatTime(new Date());
+
+  inputs.forEach(input => {
+    const barcode = input.getAttribute('data-barcode');
+    const quantity = input.value.trim();
+    if (quantity !== '') {
+      const product = productList[barcode];
+      quantities.push({
+        Date: currentDate,
+        Time: currentTime,
+        ItemCode: product.itemCode,
+        Product: product.name,
+        PackingSize: product.packingSize,
+        Quantity: parseInt(quantity, 10)
+      });
+    }
+  });
+
+  if (quantities.length > 0) {
+    sendToGoogleScript(quantities);
+  } else {
+    alert('No quantities entered');
+  }
+}
+
+function sendToGoogleScript(data) {
+  const url = 'https://script.google.com/macros/s/AKfycbxtkp0U6W1YL9ixCfFERGAkgVNnhatwhGoBkLSWBfg0BhtvFlru6tz2Lc8IpZTIQHLPzA/exec';
+  
+  fetch(url, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  })
+  .then(() => {
+    document.getElementById('submitStatus').textContent = 'Data submitted successfully!';
+    refreshApp();
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    document.getElementById('submitStatus').textContent = 'Error submitting data. Please try again.';
+  });
+}
