@@ -1,4 +1,4 @@
-// Complete product list including products without barcodes
+/ Updated product list
 const productList = {
   "": { itemCode: "49101", name: "FISH CAKE (L)", packingSize: "20'S" },
   "": { itemCode: "49102", name: "FISH CAKE (M)", packingSize: "20'S" },
@@ -50,30 +50,33 @@ function initScanner() {
   let scanTimeout;
   let isScanning = true;
 
-  // Populate the table with all product data
+  // Populate the table with product data
   for (const [barcode, product] of Object.entries(productList)) {
     const row = productTable.insertRow();
     row.innerHTML = `
       <td>${product.name}</td>
-      <td class="packing-size">${product.packingSize}</td>
+      <td>${product.packingSize}</td>
       <td><input type="number" min="0" data-barcode="${barcode}"></td>
     `;
   }
 
   function updateProduct() {
     const barcode = barcodeInput.value.trim();
-    if (barcode && productList[barcode]) {
-      const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
-      if (quantityInput) {
-        quantityInput.focus();
-        quantityInput.select();
-        isScanning = false;
+    if (barcode) {
+      const product = productList[barcode];
+      if (product) {
+        const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
+        if (quantityInput) {
+          quantityInput.focus();
+          quantityInput.select();
+          isScanning = false;
+        }
+      } else {
+        alert('Product not found');
       }
-    } else if (barcode) {
-      alert('Product not found');
+      // Clear the input after processing
+      barcodeInput.value = '';
     }
-    // Clear the input after processing
-    barcodeInput.value = '';
     focusOnBarcodeInput();
   }
 
@@ -150,21 +153,4 @@ function focusOnBarcodeInput() {
   barcodeInput.focus();
 }
 
-function formatDate(date) {
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-}
-
-function updateDateDisplay() {
-  const dateDisplay = document.getElementById('currentDate');
-  if (dateDisplay) {
-    dateDisplay.textContent = formatDate(new Date());
-  }
-}
-
-window.addEventListener('load', () => {
-  initScanner();
-  updateDateDisplay();
-});
+window.addEventListener('load', initScanner);
