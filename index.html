@@ -19,10 +19,6 @@
       h1 {
         color: #000;
         margin-top: 0;
-        margin-bottom: 5px;
-      }
-      #currentDate {
-        margin-bottom: 10px;
       }
       button {
         padding: 10px 20px;
@@ -34,10 +30,10 @@
         border-radius: 5px;
         margin: 5px;
       }
-            #barcodeInput {
+      #barcodeInput {
         padding: 10px;
         font-size: 16px;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         width: 80%;
         max-width: 300px;
       }
@@ -57,14 +53,10 @@
       input[type="number"] {
         width: 60px;
       }
-      .packing-size {
-        font-size: 0.8em;
-      }
     </style>
   </head>
   <body>
     <h1>Scan a Barcode</h1>
-    <div id="currentDate"></div>
     
     <input type="text" id="barcodeInput" placeholder="Scan barcode" autofocus>
     
@@ -85,5 +77,16 @@
     <button onclick="refreshApp()">Refresh</button>
     
     <script src="app.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/barcode-scanner-pwa/service-worker.js')
+          .then(function(registration) {
+            console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch(function(error) {
+            console.log('Service Worker registration failed:', error);
+          });
+      }
+    </script>
   </body>
 </html>
