@@ -157,4 +157,21 @@ function focusOnBarcodeInput() {
   barcodeInput.focus();
 }
 
-window.addEventListener('load', initScanner);
+function formatDate(date) {
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+function updateDateDisplay() {
+  const dateDisplay = document.getElementById('currentDate');
+  if (dateDisplay) {
+    dateDisplay.textContent = formatDate(new Date());
+  }
+}
+
+window.addEventListener('load', () => {
+  initScanner();
+  updateDateDisplay();
+});
