@@ -1,4 +1,4 @@
-// Updated product list
+/ Updated product list
 const productList = {
   "": { itemCode: "49101", name: "FISH CAKE (L)", packingSize: "20'S" },
   "": { itemCode: "49102", name: "FISH CAKE (M)", packingSize: "20'S" },
@@ -50,21 +50,17 @@ function initScanner() {
   let scanTimeout;
   let isScanning = true;
 
-  // Set current date
-  const currentDateElement = document.getElementById('currentDate');
-  const options = { timeZone: 'Asia/Singapore', year: 'numeric', month: '2-digit', day: '2-digit' };
-  const currentDate = new Date().toLocaleDateString('en-SG', options);
-  const [month, day, year] = currentDate.split('/');
-  currentDateElement.textContent = `${day}/${month}/${year}`;
-
-  // Populate the table with all product data
+  // Populate the table with product data
+  let index = 0;
   for (const [barcode, product] of Object.entries(productList)) {
     const row = productTable.insertRow();
+    const dataBarcode = barcode || `no-barcode-${index}`;
     row.innerHTML = `
       <td>${product.name}</td>
-      <td class="packing-size">${product.packingSize}</td>
-      <td><input type="number" min="0" data-item-code="${product.itemCode}" data-barcode="${barcode}"></td>
+      <td>${product.packingSize}</td>
+      <td><input type="number" min="0" data-barcode="${dataBarcode}"></td>
     `;
+    index++;
   }
 
   function updateProduct() {
@@ -86,8 +82,6 @@ function initScanner() {
     }
     focusOnBarcodeInput();
   }
-
-
 
   function focusOnBarcodeInput() {
     isScanning = true;
@@ -135,10 +129,10 @@ function submitQuantities() {
   const quantities = {};
   const inputs = document.querySelectorAll('input[type="number"]');
   inputs.forEach(input => {
-    const itemCode = input.getAttribute('data-item-code');
+    const barcode = input.getAttribute('data-barcode');
     const quantity = input.value.trim();
     if (quantity !== '') {
-      quantities[itemCode] = parseInt(quantity, 10);
+      quantities[barcode] = parseInt(quantity, 10);
     }
   });
   console.log('Submitting quantities:', quantities);
@@ -162,4 +156,22 @@ function focusOnBarcodeInput() {
   barcodeInput.focus();
 }
 
-window.addEventListener('load', initScanner);
+function formatDate(date) {
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+// Add this function to update the date display
+function updateDateDisplay() {
+  const dateDisplay = document.getElementById('dateDisplay');
+  if (dateDisplay) {
+    dateDisplay.textContent = formatDate(new Date());
+  }
+}
+
+window.addEventListener('load', () => {
+  initScanner();
+  updateDateDisplay();
+});
