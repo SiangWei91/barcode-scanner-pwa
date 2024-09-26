@@ -1,36 +1,36 @@
 // Updated product list
 const productList = {
-  "": { itemCode: "49101", name: "FISH CAKE (L)", packingSize: "20'S" },
-  "": { itemCode: "49102", name: "FISH CAKE (M)", packingSize: "20'S" },
-  "": { itemCode: "49104", name: "FISH CAKE (L) - IMPROVED", packingSize: "20'S" },
-  "": { itemCode: "49105", name: "GOLDBAR FRIED FISH CAKE", packingSize: "20'S" },
-  "": { itemCode: "49108", name: "SLICED FISH CAKE", packingSize: "1KG" },
-  "": { itemCode: "49110", name: "ROUND FISH CAKE", packingSize: "30'S" },
-  "": { itemCode: "49113", name: "ABALONE FISH CAKE", packingSize: "20'S" },
-  "": { itemCode: "49114", name: "WHITE FISH CAKE - ABALONE", packingSize: "30'S" },
-  "": { itemCode: "49115", name: "FRIED LARGE FISH CAKE", packingSize: "20'S" },
-  "": { itemCode: "49117", name: "FISH CAKE (L) - BLACK", packingSize: "20'S" },
-  "": { itemCode: "49120", name: "SAI DOU FISH CAKE (L)", packingSize: "10'S" },
-  "": { itemCode: "49121", name: "SAI DOU FISH CAKE (S)", packingSize: "10'S/pkt" },
-  "": { itemCode: "49123", name: "HANDMADE VEGETABLE FISHCAKE", packingSize: "10'S" },
-  "": { itemCode: "49129", name: "FRIED LARGE FISH CAKE", packingSize: "10'S" },
-  "": { itemCode: "49130", name: "FISH CAKE (S)", packingSize: "20'S" },
-  "": { itemCode: "49133", name: "SAI DOU FRIED FISH BALL", packingSize: "30'S" },
+  "NA1": { itemCode: "49101", name: "FISH CAKE (L)", packingSize: "20'S" },
+  "NA2": { itemCode: "49102", name: "FISH CAKE (M)", packingSize: "20'S" },
+  "NA3": { itemCode: "49104", name: "FISH CAKE (L) - IMPROVED", packingSize: "20'S" },
+  "NA4": { itemCode: "49105", name: "GOLDBAR FRIED FISH CAKE", packingSize: "20'S" },
+  "NA5": { itemCode: "49108", name: "SLICED FISH CAKE", packingSize: "1KG" },
+  "NA6": { itemCode: "49110", name: "ROUND FISH CAKE", packingSize: "30'S" },
+  "NA7": { itemCode: "49113", name: "ABALONE FISH CAKE", packingSize: "20'S" },
+  "NA8": { itemCode: "49114", name: "WHITE FISH CAKE - ABALONE", packingSize: "30'S" },
+  "NA9": { itemCode: "49115", name: "FRIED LARGE FISH CAKE", packingSize: "20'S" },
+  "NA10": { itemCode: "49117", name: "FISH CAKE (L) - BLACK", packingSize: "20'S" },
+  "NA11": { itemCode: "49120", name: "SAI DOU FISH CAKE (L)", packingSize: "10'S" },
+  "NA12": { itemCode: "49121", name: "SAI DOU FISH CAKE (S)", packingSize: "10'S/pkt" },
+  "NA13": { itemCode: "49123", name: "HANDMADE VEGETABLE FISHCAKE", packingSize: "10'S" },
+  "NA14": { itemCode: "49129", name: "FRIED LARGE FISH CAKE", packingSize: "10'S" },
+  "NA15": { itemCode: "49130", name: "FISH CAKE (S)", packingSize: "20'S" },
+  "NA16": { itemCode: "49133", name: "SAI DOU FRIED FISH BALL", packingSize: "30'S" },
   "8887151402554": { itemCode: "49201", name: "COOKED FISH BALL (L)", packingSize: "1KG" },
-  "": { itemCode: "49305", name: "COOKED FISH BALL (L)", packingSize: "400G" },
-  "": { itemCode: "49311", name: "COOKED FISH BALL (M)", packingSize: "1KG/pkt" },
+  "NA17": { itemCode: "49305", name: "COOKED FISH BALL (L)", packingSize: "400G" },
+  "NA18": { itemCode: "49311", name: "COOKED FISH BALL (M)", packingSize: "1KG/pkt" },
   "8887151403407": { itemCode: "49315", name: "COOKED FISH BALL (M)", packingSize: "400G" },
   "8887151403056": { itemCode: "49321", name: "COOKED FISH BALL (S)", packingSize: "1KG" },
-  "": { itemCode: "49332", name: "COOKED FISH BALL", packingSize: "200G" },
-  "": { itemCode: "49333", name: "FISH BALL", packingSize: "50'S" },
-  "": { itemCode: "49700", name: "FRIED FISH CAKE (M)", packingSize: "30'S" },
-  "": { itemCode: "49702", name: "GOLDBAR FRIED FISH CAKE", packingSize: "30'S" },
-  "": { itemCode: "49707", name: "FRIED FISH BALL", packingSize: "50'S" },
-  "": { itemCode: "49139", name: "FISH CAKE (M) - IMPROVED", packingSize: "20'S" },
-  "": { itemCode: "40366", name: "FISH BALL (TEOCHEW)", packingSize: "25'S" },
-  "": { itemCode: "40381", name: "FISH CAKE (L)", packingSize: "25'S" },
-  "": { itemCode: "49334", name: "FRIED FISH BALL", packingSize: "50PCS" },
-  "": { itemCode: "49335", name: "PREMIUM FRIED FISH BALL 10M", packingSize: "10'S" },
+  "NA19": { itemCode: "49332", name: "COOKED FISH BALL", packingSize: "200G" },
+  "NA20": { itemCode: "49333", name: "FISH BALL", packingSize: "50'S" },
+  "NA21": { itemCode: "49700", name: "FRIED FISH CAKE (M)", packingSize: "30'S" },
+  "NA22": { itemCode: "49702", name: "GOLDBAR FRIED FISH CAKE", packingSize: "30'S" },
+  "NA23": { itemCode: "49707", name: "FRIED FISH BALL", packingSize: "50'S" },
+  "NA24": { itemCode: "49139", name: "FISH CAKE (M) - IMPROVED", packingSize: "20'S" },
+  "NA25": { itemCode: "40366", name: "FISH BALL (TEOCHEW)", packingSize: "25'S" },
+  "NA26": { itemCode: "40381", name: "FISH CAKE (L)", packingSize: "25'S" },
+  "NA27": { itemCode: "49334", name: "FRIED FISH BALL", packingSize: "50PCS" },
+  "NA28": { itemCode: "49335", name: "PREMIUM FRIED FISH BALL 10M", packingSize: "10'S" },
   "8887151402035": { itemCode: "40361", name: "FRIED FISH BALL", packingSize: "1KG" },
   "8887151402554": { itemCode: "40401", name: "WHITE FISH CAKE", packingSize: "5'S" },
   "8887151402608": { itemCode: "40402", name: "FISH CAKE (L)", packingSize: "5'S" },
@@ -41,7 +41,7 @@ const productList = {
   "8887151502605": { itemCode: "85004", name: "PC FRIED FISH CAKE (L)", packingSize: "3/tray" },
   "8887151502636": { itemCode: "85005", name: "PC VEGETABLE FISH CAKE", packingSize: "3/tray" },
   "8887151502650": { itemCode: "85007", name: "PC WHITE FISH CAKE", packingSize: "5/tray" },
-  "": { itemCode: "45041", name: "FISH BALL", packingSize: "30PCS" }
+  "NA29": { itemCode: "45041", name: "FISH BALL", packingSize: "30PCS" }
 };
 
 function initScanner() {
@@ -51,15 +51,15 @@ function initScanner() {
   let isScanning = true;
 
   // Populate the table with product data
+  // Populate the table with product data
   for (const [barcode, product] of Object.entries(productList)) {
-  const row = productTable.insertRow();
-  const barcodeValue = barcode === "" ? "empty" : barcode;
-  row.innerHTML = `
-    <td>${product.name}</td>
-    <td>${product.packingSize}</td>
-    <td><input type="number" min="0" data-barcode="${barcodeValue}"></td>
-  `;
-}
+    const row = productTable.insertRow();
+    row.innerHTML = `
+      <td>${product.name}</td>
+      <td>${product.packingSize}</td>
+      <td><input type="number" min="0" data-barcode="${barcode}"></td>
+    `;
+  }
 
 function updateProduct() {
   const barcode = barcodeInput.value.trim();
