@@ -19,6 +19,10 @@
       h1 {
         color: #000;
         margin-top: 0;
+        margin-bottom: 5px;
+      }
+      #currentDate {
+        margin-bottom: 10px;
       }
       button {
         padding: 10px 20px;
@@ -36,6 +40,7 @@
         margin-bottom: 10px;
         width: 80%;
         max-width: 300px;
+        display: none;
       }
       table {
         width: 100%;
@@ -53,10 +58,14 @@
       input[type="number"] {
         width: 60px;
       }
+      .packing-size {
+        font-size: 0.8em;
+      }
     </style>
   </head>
   <body>
     <h1>Scan a Barcode</h1>
+    <div id="currentDate"></div>
     
     <input type="text" id="barcodeInput" placeholder="Scan barcode" autofocus>
     
