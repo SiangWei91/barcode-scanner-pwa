@@ -35,12 +35,8 @@
         margin: 5px;
       }
       #barcodeInput {
-        padding: 10px;
-        font-size: 16px;
-        margin-bottom: 10px;
-        width: 80%;
-        max-width: 300px;
-        display: none;
+        position: absolute;
+        left: -9999px;
       }
       table {
         width: 100%;
@@ -67,7 +63,7 @@
     <h1>Scan a Barcode</h1>
     <div id="currentDate"></div>
     
-    <input type="text" id="barcodeInput" placeholder="Scan barcode" autofocus style="position: absolute; left: -9999px;">
+    <input type="text" id="barcodeInput" placeholder="Scan barcode" autofocus>
     
     <table id="productTable">
       <thead>
@@ -86,16 +82,5 @@
     <button onclick="refreshApp()">Refresh</button>
     
     <script src="app.js"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/barcode-scanner-pwa/service-worker.js')
-          .then(function(registration) {
-            console.log('Service Worker registered with scope:', registration.scope);
-          })
-          .catch(function(error) {
-            console.log('Service Worker registration failed:', error);
-          });
-      }
-    </script>
   </body>
 </html>
