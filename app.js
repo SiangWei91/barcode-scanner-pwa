@@ -29,23 +29,27 @@ function initScanner() {
     `;
   }
 
-  function updateProduct() {
-    const barcode = barcodeInput.value.trim();
-    if (barcode) {
-      const product = productList[barcode];
-      if (product) {
-        const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
-        if (quantityInput) {
-          quantityInput.focus();
-          quantityInput.select();
-          isScanning = false;
-        }
-      } else {
-        alert('Product not found');
+function updateProduct() {
+  const barcode = barcodeInput.value.trim();
+  console.log('Scanned barcode:', barcode);
+  if (barcode) {
+    const product = productList[barcode];
+    console.log('Found product:', product);
+    if (product) {
+      const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
+      console.log('Found quantity input:', quantityInput);
+      if (quantityInput) {
+        quantityInput.focus();
+        quantityInput.select();
+        isScanning = false;
+        console.log('Focused on quantity input');
       }
-      // Clear the input after processing
-      barcodeInput.value = '';
+    } else {
+      alert('Product not found');
     }
+    barcodeInput.value = '';
+  }
+}
 
 
   function focusOnBarcodeInput() {
