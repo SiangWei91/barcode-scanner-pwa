@@ -50,22 +50,27 @@ function initScanner() {
   let scanTimeout;
   let isScanning = true;
 
-  // Populate the table with product data
-  for (const [barcode, product] of Object.entries(productList)) {
+  // Set current date
+  const currentDateElement = document.getElementById('currentDate');
+  const options = { timeZone: 'Asia/Singapore', year: 'numeric', month: 'long', day: 'numeric' };
+  currentDateElement.textContent = new Date().toLocaleDateString('en-SG', options);
+
+  // Populate the table with all product data
+  for (const product of Object.values(productList)) {
     const row = productTable.insertRow();
     row.innerHTML = `
       <td>${product.name}</td>
-      <td>${product.packingSize}</td>
-      <td><input type="number" min="0" data-barcode="${barcode}"></td>
+      <td class="packing-size">${product.packingSize}</td>
+      <td><input type="number" min="0" data-item-code="${product.itemCode}"></td>
     `;
   }
 
   function updateProduct() {
     const barcode = barcodeInput.value.trim();
     if (barcode) {
-      const product = productList[barcode];
+      const product = Object.values(productList).find(p => p.itemCode === barcode);
       if (product) {
-        const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
+        const quantityInput = document.querySelector(`input[data-item-code="${product.itemCode}"]`);
         if (quantityInput) {
           quantityInput.focus();
           quantityInput.select();
@@ -126,10 +131,10 @@ function submitQuantities() {
   const quantities = {};
   const inputs = document.querySelectorAll('input[type="number"]');
   inputs.forEach(input => {
-    const barcode = input.getAttribute('data-barcode');
+    const itemCode = input.getAttribute('data-item-code');
     const quantity = input.value.trim();
     if (quantity !== '') {
-      quantities[barcode] = parseInt(quantity, 10);
+      quantities[itemCode] = parseInt(quantity, 10);
     }
   });
   console.log('Submitting quantities:', quantities);
