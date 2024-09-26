@@ -66,9 +66,11 @@ function initScanner() {
   function updateProduct() {
     const barcode = barcodeInput.value.trim();
     if (barcode) {
-      const product = productList[barcode];
+      const product = Object.entries(productList).find(([key, value]) => key === barcode || value.itemCode === barcode);
       if (product) {
-        const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
+        const [key, value] = product;
+        const dataBarcode = key || `no-barcode-${Object.keys(productList).indexOf(key)}`;
+        const quantityInput = document.querySelector(`input[data-barcode="${dataBarcode}"]`);
         if (quantityInput) {
           quantityInput.focus();
           quantityInput.select();
@@ -81,6 +83,11 @@ function initScanner() {
       barcodeInput.value = '';
     }
     focusOnBarcodeInput();
+  }
+
+  function focusOnBarcodeInput() {
+    isScanning = true;
+    barcodeInput.focus();
   }
 
   // Monitor input changes
