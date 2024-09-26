@@ -52,13 +52,14 @@ function initScanner() {
 
   // Populate the table with product data
   for (const [barcode, product] of Object.entries(productList)) {
-    const row = productTable.insertRow();
-    row.innerHTML = `
-      <td>${product.name}</td>
-      <td>${product.packingSize}</td>
-      <td><input type="number" min="0" data-barcode="${barcode}"></td>
-    `;
-  }
+  const row = productTable.insertRow();
+  const barcodeValue = barcode === "" ? "empty" : barcode;
+  row.innerHTML = `
+    <td>${product.name}</td>
+    <td>${product.packingSize}</td>
+    <td><input type="number" min="0" data-barcode="${barcodeValue}"></td>
+  `;
+}
 
 function updateProduct() {
   const barcode = barcodeInput.value.trim();
