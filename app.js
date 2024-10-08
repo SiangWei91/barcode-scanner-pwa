@@ -48,8 +48,6 @@ function initScanner() {
   const barcodeInput = document.getElementById('barcodeInput');
   const stockCheckBy = document.getElementById('stockCheckBy');
   const productTable = document.getElementById('productTable').getElementsByTagName('tbody')[0];
-  let scanTimeout;
-  let isSelectingFromDropdown = false;
 
   // Populate the table with product data
   for (const [barcode, product] of Object.entries(productList)) {
@@ -61,59 +59,42 @@ function initScanner() {
     `;
   }
 
-  function updateProduct() {
-    const barcode = barcodeInput.value.trim();
+  function handleBarcodeScan(barcode) {
     console.log('Scanned barcode:', barcode);
-    if (barcode) {
-      const product = productList[barcode];
+    const product = productList[barcode];
+    if (product) {
       console.log('Found product:', product);
-      if (product) {
-        const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
-        console.log('Found quantity input:', quantityInput);
-        if (quantityInput) {
-          quantityInput.focus();
-          quantityInput.select();
-          console.log('Focused on quantity input');
-        }
-      } else {
-        showToast('Product not found');
+      const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
+      if (quantityInput) {
+        quantityInput.focus();
+        quantityInput.select();
+        console.log('Focused on quantity input');
       }
-      barcodeInput.value = '';
+    } else {
+      showToast('Product not found');
     }
+    barcodeInput.value = ''; // Clear the input for the next scan
   }
 
-  // Monitor input changes
+  // Listen for the 'input' event on the barcode input field
   barcodeInput.addEventListener('input', function() {
-    clearTimeout(scanTimeout);
-    scanTimeout = setTimeout(updateProduct, 300);
-  });
-
-  // Handle focus events
-  document.addEventListener('focusin', function(event) {
-    if (event.target.type === 'number' || event.target === stockCheckBy) {
-      isSelectingFromDropdown = true;
+    const barcode = this.value.trim();
+    if (barcode) {
+      handleBarcodeScan(barcode);
     }
   });
 
-  document.addEventListener('focusout', function(event) {
-    if (event.target === stockCheckBy) {
-      setTimeout(() => {
-        isSelectingFromDropdown = false;
-        if (document.activeElement !== barcodeInput) {
-          barcodeInput.focus();
-        }
-      }, 100);
-    }
+  // Prevent the dropdown from interfering with scanning
+  stockCheckBy.addEventListener('focus', function() {
+    barcodeInput.blur(); // Remove focus from barcode input when dropdown is focused
   });
 
-  // Handle click events
-  document.addEventListener('click', function(event) {
-    if (event.target !== barcodeInput && event.target !== stockCheckBy && !isSelectingFromDropdown) {
-      barcodeInput.focus();
-    }
+  stockCheckBy.addEventListener('blur', function() {
+    // Small delay to allow for dropdown selection before refocusing
+    setTimeout(() => barcodeInput.focus(), 100);
   });
 
-  // Initially focus on barcode input
+  // Ensure barcode input is focused when the page loads
   barcodeInput.focus();
 }
 
@@ -163,12 +144,7 @@ function refreshApp() {
   });
   document.getElementById('stockCheckBy').value = ''; // Reset the dropdown
   console.log('App refreshed');
-  focusOnBarcodeInput();
-}
-
-function focusOnBarcodeInput() {
-  const barcodeInput = document.getElementById('barcodeInput');
-  barcodeInput.focus();
+  barcodeInput.focus(); // Refocus on the barcode input after refresh
 }
 
 function formatDate(date) {
