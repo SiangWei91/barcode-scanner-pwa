@@ -47,11 +47,12 @@ const productList = {
 function initScanner() {
   const barcodeInput = document.getElementById('barcodeInput');
   const stockCheckBy = document.getElementById('stockCheckBy');
-  const productTable = document.getElementById('productTable').getElementsByTagName('tbody')[0];
+  const productTable = document.getElementById('productTable');
 
   // Populate the table with product data
+  const tbody = productTable.getElementsByTagName('tbody')[0];
   for (const [barcode, product] of Object.entries(productList)) {
-    const row = productTable.insertRow();
+    const row = tbody.insertRow();
     row.innerHTML = `
       <td>${product.name}</td>
       <td>${product.packingSize}</td>
@@ -69,17 +70,10 @@ function initScanner() {
         quantityInput.focus();
         quantityInput.select();
         console.log('Focused on quantity input');
-        // Set a timeout to refocus on barcode input after a short delay
-        setTimeout(() => {
-          barcodeInput.focus();
-          console.log('Refocused on barcode input');
-        }, 100); // Adjust this delay as needed
       }
     } else {
       showToast('Product not found');
-      // Immediately refocus on barcode input if product not found
       barcodeInput.focus();
-      console.log('Refocused on barcode input');
     }
     barcodeInput.value = ''; // Clear the input for the next scan
   }
@@ -102,15 +96,15 @@ function initScanner() {
     setTimeout(() => barcodeInput.focus(), 100);
   });
 
-  // Ensure barcode input is focused when the page loads
-  barcodeInput.focus();
-
-  // Add a global click event listener to refocus on barcode input
-  document.addEventListener('click', function(event) {
-    if (event.target !== stockCheckBy && event.target !== barcodeInput) {
+  // Add click event listener to the table to refocus on barcode input
+  productTable.addEventListener('click', function(event) {
+    if (event.target.tagName !== 'INPUT') {
       barcodeInput.focus();
     }
   });
+
+  // Ensure barcode input is focused when the page loads
+  barcodeInput.focus();
 }
 
 function submitQuantities() {
