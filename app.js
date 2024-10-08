@@ -126,21 +126,6 @@ function updateProduct() {
   focusOnBarcodeInput();
 }
 
-function submitQuantities() {
-  const quantities = {};
-  const inputs = document.querySelectorAll('input[type="number"]');
-  inputs.forEach(input => {
-    const barcode = input.getAttribute('data-barcode');
-    const quantity = input.value.trim();
-    if (quantity !== '') {
-      quantities[barcode] = parseInt(quantity, 10);
-    }
-  });
-  console.log('Submitting quantities:', quantities);
-  alert('Quantities submitted');
-  focusOnBarcodeInput();
-}
-
 function refreshApp() {
   const barcodeInput = document.getElementById('barcodeInput');
   barcodeInput.value = '';
@@ -216,6 +201,12 @@ function submitQuantities() {
   const inputs = document.querySelectorAll('input[type="number"]');
   const currentDate = formatDate(new Date());
   const currentTime = formatTime(new Date());
+  const stockCheckBy = document.getElementById('stockCheckBy').value;
+
+  if (!stockCheckBy) {
+    showToast('Please select who is performing the stock check');
+    return;
+  }
 
   inputs.forEach(input => {
     const barcode = input.getAttribute('data-barcode');
@@ -228,7 +219,8 @@ function submitQuantities() {
         ItemCode: product.itemCode,
         Product: product.name,
         PackingSize: product.packingSize,
-        Quantity: parseInt(quantity, 10)
+        Quantity: parseInt(quantity, 10),
+        StockCheckBy: stockCheckBy  // Add this line
       });
     }
   });
