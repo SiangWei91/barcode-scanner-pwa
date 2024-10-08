@@ -46,11 +46,11 @@ const productList = {
 
 function initScanner() {
   const barcodeInput = document.getElementById('barcodeInput');
+  const stockCheckBy = document.getElementById('stockCheckBy');
   const productTable = document.getElementById('productTable').getElementsByTagName('tbody')[0];
   let scanTimeout;
-  let isScanning = true;
+  let isSelectingFromDropdown = false;
 
-  // Populate the table with product data
   // Populate the table with product data
   for (const [barcode, product] of Object.entries(productList)) {
     const row = productTable.insertRow();
@@ -61,69 +61,97 @@ function initScanner() {
     `;
   }
 
-function updateProduct() {
-  const barcode = barcodeInput.value.trim();
-  console.log('Scanned barcode:', barcode);
-  if (barcode) {
-    const product = productList[barcode];
-    console.log('Found product:', product);
-    if (product) {
-      const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
-      console.log('Found quantity input:', quantityInput);
-      if (quantityInput) {
-        quantityInput.focus();
-        quantityInput.select();
-        isScanning = false;
-        console.log('Focused on quantity input');
+  function updateProduct() {
+    const barcode = barcodeInput.value.trim();
+    console.log('Scanned barcode:', barcode);
+    if (barcode) {
+      const product = productList[barcode];
+      console.log('Found product:', product);
+      if (product) {
+        const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
+        console.log('Found quantity input:', quantityInput);
+        if (quantityInput) {
+          quantityInput.focus();
+          quantityInput.select();
+          console.log('Focused on quantity input');
+        }
+      } else {
+        showToast('Product not found');
       }
-    } else {
-      alert('Product not found');
+      barcodeInput.value = '';
     }
-    barcodeInput.value = '';
-  }
-}
-
-
-  function focusOnBarcodeInput() {
-    isScanning = true;
-    barcodeInput.focus();
   }
 
   // Monitor input changes
   barcodeInput.addEventListener('input', function() {
     clearTimeout(scanTimeout);
-    scanTimeout = setTimeout(updateProduct, 300); // Delay of 100ms
+    scanTimeout = setTimeout(updateProduct, 300);
   });
 
   // Handle focus events
-  document.addEventListener('focus', function(event) {
-    if (event.target.type === 'number') {
-      isScanning = false;
-    } else if (event.target === barcodeInput) {
-      isScanning = true;
+  document.addEventListener('focusin', function(event) {
+    if (event.target.type === 'number' || event.target === stockCheckBy) {
+      isSelectingFromDropdown = true;
     }
-  }, true);
+  });
+
+  document.addEventListener('focusout', function(event) {
+    if (event.target === stockCheckBy) {
+      setTimeout(() => {
+        isSelectingFromDropdown = false;
+        if (document.activeElement !== barcodeInput) {
+          barcodeInput.focus();
+        }
+      }, 100);
+    }
+  });
 
   // Handle click events
   document.addEventListener('click', function(event) {
-    if (event.target === barcodeInput) {
-      focusOnBarcodeInput();
-    } else if (event.target.type === 'number') {
-      isScanning = false;
-    } else {
-      focusOnBarcodeInput();
-    }
-  }, true);
-
-  // Continuously check and set focus to barcode input when in scanning mode
-  setInterval(() => {
-    if (isScanning && document.activeElement !== barcodeInput) {
+    if (event.target !== barcodeInput && event.target !== stockCheckBy && !isSelectingFromDropdown) {
       barcodeInput.focus();
     }
-  }, 100);
+  });
 
   // Initially focus on barcode input
-  focusOnBarcodeInput();
+  barcodeInput.focus();
+}
+
+function submitQuantities() {
+  const quantities = [];
+  const inputs = document.querySelectorAll('input[type="number"]');
+  const currentDate = formatDate(new Date());
+  const currentTime = formatTime(new Date());
+  const stockCheckBy = document.getElementById('stockCheckBy').value;
+
+  if (!stockCheckBy) {
+    showToast('Please select who is performing the stock check');
+    return;
+  }
+
+  inputs.forEach(input => {
+    const barcode = input.getAttribute('data-barcode');
+    const quantity = input.value.trim();
+    if (quantity !== '') {
+      const product = productList[barcode];
+      quantities.push({
+        Date: currentDate,
+        Time: currentTime,
+        ItemCode: product.itemCode,
+        Product: product.name,
+        PackingSize: product.packingSize,
+        Quantity: parseInt(quantity, 10),
+        StockCheckBy: stockCheckBy
+      });
+    }
+  });
+
+  if (quantities.length > 0) {
+    showLoadingOverlay();
+    sendToGoogleScript(quantities);
+  } else {
+    showToast('No quantities entered');
+  }
 }
 
 function refreshApp() {
@@ -133,6 +161,7 @@ function refreshApp() {
   inputs.forEach(input => {
     input.value = '';
   });
+  document.getElementById('stockCheckBy').value = ''; // Reset the dropdown
   console.log('App refreshed');
   focusOnBarcodeInput();
 }
@@ -172,15 +201,6 @@ function updateDateTimeDisplay() {
   }
 }
 
-// Update the date and time every second
-setInterval(updateDateTimeDisplay, 1000);
-
-window.addEventListener('load', () => {
-  initScanner();
-  updateDateTimeDisplay();
-});
-
-
 function showLoadingOverlay() {
   document.getElementById('loadingOverlay').style.display = 'flex';
 }
@@ -194,43 +214,6 @@ function showToast(message) {
   toast.textContent = message;
   toast.className = 'show';
   setTimeout(() => { toast.className = toast.className.replace('show', ''); }, 3000);
-}
-
-function submitQuantities() {
-  const quantities = [];
-  const inputs = document.querySelectorAll('input[type="number"]');
-  const currentDate = formatDate(new Date());
-  const currentTime = formatTime(new Date());
-  const stockCheckBy = document.getElementById('stockCheckBy').value;
-
-  if (!stockCheckBy) {
-    showToast('Please select who is performing the stock check');
-    return;
-  }
-
-  inputs.forEach(input => {
-    const barcode = input.getAttribute('data-barcode');
-    const quantity = input.value.trim();
-    if (quantity !== '') {
-      const product = productList[barcode];
-      quantities.push({
-        Date: currentDate,
-        Time: currentTime,
-        ItemCode: product.itemCode,
-        Product: product.name,
-        PackingSize: product.packingSize,
-        Quantity: parseInt(quantity, 10),
-        StockCheckBy: stockCheckBy  // Add this line
-      });
-    }
-  });
-
-  if (quantities.length > 0) {
-    showLoadingOverlay();
-    sendToGoogleScript(quantities);
-  } else {
-    showToast('No quantities entered');
-  }
 }
 
 function sendToGoogleScript(data) {
@@ -255,3 +238,11 @@ function sendToGoogleScript(data) {
     showToast('Error submitting data. Please try again.');
   });
 }
+
+// Update the date and time every second
+setInterval(updateDateTimeDisplay, 1000);
+
+window.addEventListener('load', () => {
+  initScanner();
+  updateDateTimeDisplay();
+});
