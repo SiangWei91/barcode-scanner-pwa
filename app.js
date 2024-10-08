@@ -69,9 +69,17 @@ function initScanner() {
         quantityInput.focus();
         quantityInput.select();
         console.log('Focused on quantity input');
+        // Set a timeout to refocus on barcode input after a short delay
+        setTimeout(() => {
+          barcodeInput.focus();
+          console.log('Refocused on barcode input');
+        }, 100); // Adjust this delay as needed
       }
     } else {
       showToast('Product not found');
+      // Immediately refocus on barcode input if product not found
+      barcodeInput.focus();
+      console.log('Refocused on barcode input');
     }
     barcodeInput.value = ''; // Clear the input for the next scan
   }
@@ -96,6 +104,13 @@ function initScanner() {
 
   // Ensure barcode input is focused when the page loads
   barcodeInput.focus();
+
+  // Add a global click event listener to refocus on barcode input
+  document.addEventListener('click', function(event) {
+    if (event.target !== stockCheckBy && event.target !== barcodeInput) {
+      barcodeInput.focus();
+    }
+  });
 }
 
 function submitQuantities() {
