@@ -161,6 +161,51 @@ button:hover {
         from {opacity: 1;}
         to {opacity: 0;}
       }
+
+      .floating-input {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        max-width: 300px;
+        padding: 15px;
+        background-color: #fff;
+        border: 2px solid #3498db;
+        border-radius: 25px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        z-index: 1000;
+        font-size: 16px;
+        text-align: center;
+      }
+
+      .floating-input:focus {
+        outline: none;
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+      }
+
+            .stock-check-container {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .stock-check-container label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #2c3e50;
+      }
+
+      #stockCheckBy {
+        width: 100%;
+        max-width: 300px;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #fff;
+        color: #333;
+      }
     </style>
   </head>
   <body>
@@ -169,7 +214,7 @@ button:hover {
     <div id="currentDate"></div>
     <div id="currentTime"></div>
     
-    <input type="text" id="barcodeInput" placeholder="Scan barcode" autofocus>
+    <input type="text" id="barcodeInput" class="floating-input" placeholder="Scan barcode" autofocus>
     
     <table id="productTable">
       <thead>
@@ -183,6 +228,17 @@ button:hover {
         <!-- Table rows will be populated by JavaScript -->
       </tbody>
     </table>
+
+    <div class="stock-check-container">
+      <label for="stockCheckBy">Stock Check By:</label>
+      <select id="stockCheckBy">
+        <option value="">Select a person</option>
+        <option value="Tang Yee Leng">Tang Yee Leng</option>
+        <option value="Teh Siew Hock">Teh Siew Hock</option>
+        <option value="Jason">Jason</option>
+        <option value="Delta">Delta</option>
+      </select>
+    </div>
     
     <button onclick="submitQuantities()">Submit Quantities</button>
     <button onclick="refreshApp()">Refresh</button>
