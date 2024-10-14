@@ -28,7 +28,7 @@ const productList = {
   "40358": { itemCode: "40358", name: "VP正西刀小果 SAI DOU PILLOW FISH CAKE (S)", packingSize: "230g" },
   "40359": { itemCode: "40359", name: "VP炸包丸 FRIED FISH BALL", packingSize: "270g" },
   "40339": { itemCode: "40339", name: "VP切果片 VP SLICED FISH CAKE", packingSize: "200g" },
-  "40337": { itemCode: "40337", name: "VP蟹味柳 VP KANIKI CHUNK", packingSize: "80g" },
+  "40337": { itemCode: "40337", name: "VP蟹味柳 VP KANIMI CHUNK", packingSize: "80g" },
   "40338": { itemCode: "40338", name: "VP墨鱼丸 VP CUTTLEFISH BALL", packingSize: "190g" },
   "40342": { itemCode: "40342", name: "VP皇帝蟹丸 VP KING CRAB BALL", packingSize: "190g" }
 };
@@ -38,16 +38,22 @@ function initScanner() {
   const stockCheckBy = document.getElementById('stockCheckBy');
   const productTable = document.getElementById('productTable');
 
+  // Create an array to preserve the order of products
+  const orderedProductList = Object.entries(productList).map(([barcode, product]) => ({
+    barcode,
+    ...product
+  }));
+
   // Populate the table with product data
   const tbody = productTable.getElementsByTagName('tbody')[0];
-  for (const [barcode, product] of Object.entries(productList)) {
+  orderedProductList.forEach(product => {
     const row = tbody.insertRow();
     row.innerHTML = `
       <td>${product.name}</td>
       <td>${product.packingSize}</td>
-      <td><input type="number" min="0" data-barcode="${barcode}"></td>
+      <td><input type="number" min="0" data-barcode="${product.barcode}"></td>
     `;
-  }
+  });
 
   function handleBarcodeScan(barcode) {
     console.log('Scanned barcode:', barcode);
