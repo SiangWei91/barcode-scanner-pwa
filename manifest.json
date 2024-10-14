@@ -1,6 +1,6 @@
 {
   "name": "Barcode Scanner",
-  "short_name": "Scanner",
+  "short_name": "CR5c Scanner",
   "description": "A simple PWA barcode scanner app",
   "start_url": "/barcode-scanner-pwa/index.html",
   "display": "standalone",
