@@ -1,52 +1,46 @@
 // Updated product list
-const productList = {
-  "40401": { itemCode: "40401", name: "大鱼香 FISH NGOH HIANG (L)", packingSize: "20's" },
-  "40402": { itemCode: "40402", name: "小鱼香 FISH NGOH HIANG (S)", packingSize: "50's" },
-  "40410": { itemCode: "40410", name: "大鸡香 CHICKEN NGOH HIANG", packingSize: "20's" },
-  "40412": { itemCode: "40412", name: "鸡粒 CHICKEN NGOH HIANG BALL", packingSize: "50's" },
-  "40430": { itemCode: "40430", name: "炸云吞 FRIED WANTON", packingSize: "50's" },
-  "40440": { itemCode: "40440", name: "扁香 FLAT NGOH HIANG", packingSize: "10's" },
-  "40501": { itemCode: "40501", name: "大鱼香 FISH NGOH HIANG (L)", packingSize: "3's" },
-  "40502": { itemCode: "40502", name: "小鱼香 FISH NGOH HIANG (S)", packingSize: "8's" },
-  "40510": { itemCode: "40510", name: "大五香 NGOH HIANG (L)", packingSize: "3's" },
-  "40512": { itemCode: "40512", name: "五香粒 NGOH HIANG BALL", packingSize: "8's" },
-  "40520": { itemCode: "40520", name: "炸云吞 FRIED WANTON", packingSize: "8s" },
-  "85008": { itemCode: "85008", name: "PC大鱼香 PC FISH NGOH HIANG (L)", packingSize: "3's" },
-  "85009": { itemCode: "85009", name: "PC小鱼香 PC FISH NGOH HIANG (S)", packingSize: "8's" },
-  "40423": { itemCode: "40423", name: "大鸡香 NGOH HIANG (L)", packingSize: "10s" },
-  "40340": { itemCode: "40340", name: "VP 蟹味丸 VP FLAVOURED CRAB BALL", packingSize: "170g" },
-  "40341": { itemCode: "40341", name: "VP 大鸡香 VP CHICKEN NGOH HIANG (L)", packingSize: "230g" },
-  "40346": { itemCode: "40346", name: "VP鱼豆腐 FISH TOFU", packingSize: "160g" },
-  "40347": { itemCode: "40347", name: "VP扁香 FLAT NGOH HIANG", packingSize: "190g" },
-  "40345": { itemCode: "40345", name: "VP海鲜粒 SEAFOOD BALL", packingSize: "200g" },
-  "40348": { itemCode: "40348", name: "VP鸡香粒 CHICKEN NGOH HIANG BALL", packingSize: "200g" },
-  "40349": { itemCode: "40349", name: "VP小鱼香 VP FISH NGOH HIANG (S)", packingSize: "200g" },
-  "40343": { itemCode: "40343", name: "VP香菇丸 MUSHROOM BALL", packingSize: "120g" },
-  "70002": { itemCode: "70002", name: "黄金豆香片 TASTY BITES SOY FISH PILLOW", packingSize: "150g" },
-  "40356": { itemCode: "40356", name: "VP大饼 FISH CAKE L", packingSize: "185g" },
-  "40357": { itemCode: "40357", name: "VP小西刀 SAI DOU FISH CAKE (S)", packingSize: "210g" },
-  "40358": { itemCode: "40358", name: "VP正西刀小果 SAI DOU PILLOW FISH CAKE (S)", packingSize: "230g" },
-  "40359": { itemCode: "40359", name: "VP炸包丸 FRIED FISH BALL", packingSize: "270g" },
-  "40339": { itemCode: "40339", name: "VP切果片 VP SLICED FISH CAKE", packingSize: "200g" },
-  "40337": { itemCode: "40337", name: "VP蟹味柳 VP KANIMI CHUNK", packingSize: "80g" },
-  "40338": { itemCode: "40338", name: "VP墨鱼丸 VP CUTTLEFISH BALL", packingSize: "190g" },
-  "40342": { itemCode: "40342", name: "VP皇帝蟹丸 VP KING CRAB BALL", packingSize: "190g" }
-};
+const productList = [
+  { barcode: "40401", itemCode: "40401", name: "大鱼香 FISH NGOH HIANG (L)", packingSize: "20's" },
+  { barcode: "40402", itemCode: "40402", name: "小鱼香 FISH NGOH HIANG (S)", packingSize: "50's" },
+  { barcode: "40410", itemCode: "40410", name: "大鸡香 CHICKEN NGOH HIANG", packingSize: "20's" },
+  { barcode: "40412", itemCode: "40412", name: "鸡粒 CHICKEN NGOH HIANG BALL", packingSize: "50's" },
+  { barcode: "40430", itemCode: "40430", name: "炸云吞 FRIED WANTON", packingSize: "50's" },
+  { barcode: "40440", itemCode: "40440", name: "扁香 FLAT NGOH HIANG", packingSize: "10's" },
+  { barcode: "40501", itemCode: "40501", name: "大鱼香 FISH NGOH HIANG (L)", packingSize: "3's" },
+  { barcode: "40502", itemCode: "40502", name: "小鱼香 FISH NGOH HIANG (S)", packingSize: "8's" },
+  { barcode: "40510", itemCode: "40510", name: "大五香 NGOH HIANG (L)", packingSize: "3's" },
+  { barcode: "40512", itemCode: "40512", name: "五香粒 NGOH HIANG BALL", packingSize: "8's" },
+  { barcode: "40520", itemCode: "40520", name: "炸云吞 FRIED WANTON", packingSize: "8s" },
+  { barcode: "85008", itemCode: "85008", name: "PC大鱼香 PC FISH NGOH HIANG (L)", packingSize: "3's" },
+  { barcode: "85009", itemCode: "85009", name: "PC小鱼香 PC FISH NGOH HIANG (S)", packingSize: "8's" },
+  { barcode: "40423", itemCode: "40423", name: "大鸡香 NGOH HIANG (L)", packingSize: "10s" },
+  { barcode: "40340", itemCode: "40340", name: "VP 蟹味丸 VP FLAVOURED CRAB BALL", packingSize: "170g" },
+  { barcode: "40341", itemCode: "40341", name: "VP 大鸡香 VP CHICKEN NGOH HIANG (L)", packingSize: "230g" },
+  { barcode: "40346", itemCode: "40346", name: "VP鱼豆腐 FISH TOFU", packingSize: "160g" },
+  { barcode: "40347", itemCode: "40347", name: "VP扁香 FLAT NGOH HIANG", packingSize: "190g" },
+  { barcode: "40345", itemCode: "40345", name: "VP海鲜粒 SEAFOOD BALL", packingSize: "200g" },
+  { barcode: "40348", itemCode: "40348", name: "VP鸡香粒 CHICKEN NGOH HIANG BALL", packingSize: "200g" },
+  { barcode: "40349", itemCode: "40349", name: "VP小鱼香 VP FISH NGOH HIANG (S)", packingSize: "200g" },
+  { barcode: "40343", itemCode: "40343", name: "VP香菇丸 MUSHROOM BALL", packingSize: "120g" },
+  { barcode: "70002", itemCode: "70002", name: "黄金豆香片 TASTY BITES SOY FISH PILLOW", packingSize: "150g" },
+  { barcode: "40356", itemCode: "40356", name: "VP大饼 FISH CAKE L", packingSize: "185g" },
+  { barcode: "40357", itemCode: "40357", name: "VP小西刀 SAI DOU FISH CAKE (S)", packingSize: "210g" },
+  { barcode: "40358", itemCode: "40358", name: "VP正西刀小果 SAI DOU PILLOW FISH CAKE (S)", packingSize: "230g" },
+  { barcode: "40359", itemCode: "40359", name: "VP炸包丸 FRIED FISH BALL", packingSize: "270g" },
+  { barcode: "40339", itemCode: "40339", name: "VP切果片 VP SLICED FISH CAKE", packingSize: "200g" },
+  { barcode: "40337", itemCode: "40337", name: "VP蟹味柳 VP KANIMI CHUNK", packingSize: "80g" },
+  { barcode: "40338", itemCode: "40338", name: "VP墨鱼丸 VP CUTTLEFISH BALL", packingSize: "190g" },
+  { barcode: "40342", itemCode: "40342", name: "VP皇帝蟹丸 VP KING CRAB BALL", packingSize: "190g" }
+];
 
 function initScanner() {
   const barcodeInput = document.getElementById('barcodeInput');
   const stockCheckBy = document.getElementById('stockCheckBy');
   const productTable = document.getElementById('productTable');
 
-  // Create an array to preserve the order of products
-  const orderedProductList = Object.entries(productList).map(([barcode, product]) => ({
-    barcode,
-    ...product
-  }));
-
   // Populate the table with product data
   const tbody = productTable.getElementsByTagName('tbody')[0];
-  orderedProductList.forEach(product => {
+  productList.forEach(product => {
     const row = tbody.insertRow();
     row.innerHTML = `
       <td>${product.name}</td>
@@ -57,7 +51,7 @@ function initScanner() {
 
   function handleBarcodeScan(barcode) {
     console.log('Scanned barcode:', barcode);
-    const product = productList[barcode];
+    const product = productList.find(p => p.barcode === barcode);
     if (product) {
       console.log('Found product:', product);
       const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
@@ -118,16 +112,18 @@ function submitQuantities() {
     const barcode = input.getAttribute('data-barcode');
     const quantity = input.value.trim();
     if (quantity !== '') {
-      const product = productList[barcode];
-      quantities.push({
-        Date: currentDate,
-        Time: currentTime,
-        ItemCode: product.itemCode,
-        Product: product.name,
-        PackingSize: product.packingSize,
-        Quantity: parseInt(quantity, 10),
-        StockCheckBy: stockCheckBy
-      });
+      const product = productList.find(p => p.barcode === barcode);
+      if (product) {
+        quantities.push({
+          Date: currentDate,
+          Time: currentTime,
+          ItemCode: product.itemCode,
+          Product: product.name,
+          PackingSize: product.packingSize,
+          Quantity: parseInt(quantity, 10),
+          StockCheckBy: stockCheckBy
+        });
+      }
     }
   });
 
