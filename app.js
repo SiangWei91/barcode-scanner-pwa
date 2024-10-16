@@ -205,13 +205,13 @@ function sendToGoogleScript(data) {
   })
   .then(() => {
     hideLoadingOverlay();
-    showToast('Data submitted successfully!');
+    showToast('成功保存 Data submitted successfully!');
     refreshApp();
   })
   .catch(error => {
     console.error('Error:', error);
     hideLoadingOverlay();
-    showToast('Error submitting data. Please try again.');
+    showToast('保存失误 Error submitting data. Please try again.');
   });
 }
 
