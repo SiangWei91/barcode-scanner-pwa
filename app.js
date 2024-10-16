@@ -222,3 +222,23 @@ window.addEventListener('load', () => {
   initScanner();
   updateDateTimeDisplay();
 });
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/barcode-scanner-pwa/service-worker.js').then(reg => {
+    reg.update();
+  });
+}
+
+function checkForUpdates() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistration().then(reg => {
+      if (reg) reg.update();
+    });
+  }
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    checkForUpdates();
+  }
+});
