@@ -96,18 +96,18 @@ function initScanner() {
   barcodeInput.focus();
 }
 
-function submitQuantities() {
+function submitQuantities(sheetName) {
   const quantities = [];
   const inputs = document.querySelectorAll('input[type="number"]');
   const currentDate = formatDate(new Date());
   const currentTime = formatTime(new Date());
   const stockCheckBy = document.getElementById('stockCheckBy').value;
-
+  
   if (!stockCheckBy) {
     showToast('Please select who is performing the stock check');
     return;
   }
-
+  
   inputs.forEach(input => {
     const barcode = input.getAttribute('data-barcode');
     const quantity = input.value.trim();
@@ -126,10 +126,10 @@ function submitQuantities() {
       }
     }
   });
-
+  
   if (quantities.length > 0) {
     showLoadingOverlay();
-    sendToGoogleScript(quantities);
+    sendToGoogleScript(quantities, sheetName);
   } else {
     showToast('No quantities entered');
   }
@@ -192,16 +192,21 @@ function showToast(message) {
   setTimeout(() => { toast.className = toast.className.replace('show', ''); }, 3000);
 }
 
-function sendToGoogleScript(data) {
+function sendToGoogleScript(data, sheetName) {
   const url = 'https://script.google.com/macros/s/AKfycbxtkp0U6W1YL9ixCfFERGAkgVNnhatwhGoBkLSWBfg0BhtvFlru6tz2Lc8IpZTIQHLPzA/exec';
   
+  const payload = {
+    data: data,
+    sheetName: sheetName
+  };
+
   fetch(url, {
     method: 'POST',
     mode: 'no-cors',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(payload)
   })
   .then(() => {
     hideLoadingOverlay();
