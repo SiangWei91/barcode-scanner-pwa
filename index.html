@@ -77,17 +77,44 @@ button {
     padding: 12px 24px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #2ecc71;
+    background-color: #3498db;  /* Changed to match your header accent color */
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;  /* Increased border-radius for a more modern look */
     margin: 10px;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 button:hover {
+    background-color: #2980b9;  /* Darker shade for hover state */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Specific styles for Submit and Refresh buttons */
+button[onclick="submitQuantities"] {
+    background-color: #2ecc71;  /* Green color for Submit button */
+}
+
+button[onclick="submitQuantities"]:hover {
     background-color: #27ae60;
+}
+
+button[onclick="refreshApp"] {
+    background-color: #e74c3c;  /* Red color for Refresh button */
+}
+
+button[onclick="refreshApp"]:hover {
+    background-color: #c0392b;
 }
 #submitStatus {
         margin-top: 10px;
@@ -275,8 +302,9 @@ button:hover {
       </select>
     </div>
     
-    <button onclick="submitQuantities()">Submit Quantities</button>
+    
     <button onclick="refreshApp()">Refresh</button>
+    <button onclick="submitQuantities()">Submit</button>
     <div id="loadingOverlay">
       <div class="spinner"></div>
     </div>
