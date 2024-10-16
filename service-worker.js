@@ -1,4 +1,3 @@
-// Install the service worker and cache files
 const CACHE_NAME = 'barcode-scanner-cache-v3';
 const urlsToCache = [
   '/barcode-scanner-pwa/',
@@ -20,17 +19,11 @@ self.addEventListener('install', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-  if (event.request.url.includes('productList.json')) {
-    // For productList.json, always go to network
-    event.respondWith(fetch(event.request));
-  } else {
-    event.respondWith(
-      caches.match(event.request)
-        .then(function(response) {
-          return response || fetch(event.request);
-        })
-    );
-  }
+  event.respondWith(
+    fetch(event.request).catch(function() {
+      return caches.match(event.request);
+    })
+  );
 });
 
 self.addEventListener('activate', function(event) {
