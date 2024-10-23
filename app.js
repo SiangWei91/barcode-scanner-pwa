@@ -26,7 +26,7 @@ const productList = [
   { barcode: "40356", itemCode: "40356", name: "VP大饼 FISH CAKE L", packingSize: "185g" },
   { barcode: "40357", itemCode: "40357", name: "VP小西刀 SAI DOU FISH CAKE (S)", packingSize: "210g" },
   { barcode: "40358", itemCode: "40358", name: "VP正西刀小果 SAI DOU PILLOW FISH CAKE (S)", packingSize: "230g" },
-  { barcode: "40359", itemCode: "40359", name: "VP炸包丸 FRIED FISH BALL", packingSize: "270g" },
+  { barcode: "40359", itemCode: "40359", name: "VP炸鱼丸 FRIED FISH BALL", packingSize: "270g" },
   { barcode: "40339", itemCode: "40339", name: "VP切果片 VP SLICED FISH CAKE", packingSize: "200g" },
   { barcode: "40337", itemCode: "40337", name: "VP蟹味柳 VP KANIMI CHUNK", packingSize: "80g" },
   { barcode: "40338", itemCode: "40338", name: "VP墨鱼丸 VP CUTTLEFISH BALL", packingSize: "190g" },
