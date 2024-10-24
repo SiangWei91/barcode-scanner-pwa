@@ -235,9 +235,9 @@ function sendToGoogleScript(data, sheetName) {
 setInterval(updateDateTimeDisplay, 1000);
 
 window.addEventListener('load', () => {
-  initScanner();
-  updateDateTimeDisplay();
-  preventPullToRefresh();
+    initScanner();
+    updateDateTimeDisplay();
+    initPDASettings();
 });
 
 if ('serviceWorker' in navigator) {
@@ -260,20 +260,32 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-function preventPullToRefresh() {
-  let touchStartY = 0;
-  
-  document.addEventListener('touchstart', function(e) {
-    touchStartY = e.touches[0].clientY;
-  }, { passive: false });
+function initPDASettings() {
+    // Prevent default touch behaviors
+    document.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+    }, { passive: false });
 
-  document.addEventListener('touchmove', function(e) {
-    const touchY = e.touches[0].clientY;
-    const touchYDelta = touchY - touchStartY;
-    
-    // Prevent scrolling up when already at the top
-    if (touchYDelta > 0 && window.scrollY === 0) {
-      e.preventDefault();
-    }
-  }, { passive: false });
+    // Enable scrolling only for the product table
+    const productTable = document.getElementById('productTable');
+    let startY;
+
+    productTable.addEventListener('touchstart', function(e) {
+        startY = e.touches[0].pageY;
+        e.stopPropagation();
+    }, { passive: true });
+
+    productTable.addEventListener('touchmove', function(e) {
+        e.stopPropagation();
+        
+        // Check if we're at the top or bottom of the scrollable area
+        const isAtTop = this.scrollTop === 0;
+        const isAtBottom = this.scrollHeight - this.scrollTop === this.clientHeight;
+        const touchY = e.touches[0].pageY;
+        
+        // Prevent overscroll but allow normal scrolling
+        if ((isAtTop && touchY > startY) || (isAtBottom && touchY < startY)) {
+            e.preventDefault();
+        }
+    }, { passive: false });
 }
