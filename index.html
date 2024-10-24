@@ -16,6 +16,7 @@ body {
     padding: 0;
     margin: 0;
     line-height: 1.6;
+ padding-bottom: 100px;
 }
 
 h1 {
@@ -195,10 +196,10 @@ button[onclick="refreshApp"]:hover {
     border: 2px solid #3498db;
     border-radius: 25px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    z-index: 1000;
+    z-index: 100; /* Reduced z-index so it doesn't overlay buttons */
     font-size: 16px;
     text-align: center;
-    opacity: 0;  /* Just add this line to make it invisible but still focusable */
+    opacity: 0;
 }
 
       .floating-input:focus {
