@@ -51,14 +51,15 @@ function initScanner() {
 
   // Add focus event listeners to all quantity inputs
   const quantityInputs = document.querySelectorAll('input[type="number"]');
-  quantityInputs.forEach(input => {
+quantityInputs.forEach(input => {
     input.addEventListener('focus', function() {
-      setTimeout(() => {
-        barcodeInput.focus();
-        console.log('Auto-returned focus to barcode input');
-      }, 5000);
+        const currentScroll = window.scrollY;  // Store current scroll position
+        setTimeout(() => {
+            barcodeInput.focus();
+            window.scrollTo(0, currentScroll);  // Restore scroll position after focus
+        }, 5000);
     });
-  });
+});
 
   function handleBarcodeScan(barcode) {
     console.log('Scanned barcode:', barcode);
