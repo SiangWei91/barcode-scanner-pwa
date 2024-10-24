@@ -237,7 +237,6 @@ setInterval(updateDateTimeDisplay, 1000);
 window.addEventListener('load', () => {
   initScanner();
   updateDateTimeDisplay();
-  preventPullToRefresh();
 });
 
 if ('serviceWorker' in navigator) {
@@ -260,20 +259,4 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-function preventPullToRefresh() {
-  let touchStartY = 0;
-  
-  document.addEventListener('touchstart', function(e) {
-    touchStartY = e.touches[0].clientY;
-  }, { passive: false });
 
-  document.addEventListener('touchmove', function(e) {
-    const touchY = e.touches[0].clientY;
-    const touchYDelta = touchY - touchStartY;
-    
-    // Prevent scrolling up when already at the top
-    if (touchYDelta > 0 && window.scrollY === 0) {
-      e.preventDefault();
-    }
-  }, { passive: false });
-}
