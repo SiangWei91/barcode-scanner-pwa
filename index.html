@@ -263,6 +263,21 @@ button[onclick="refreshApp"]:hover {
             background-color: #3498db;
             margin-right: 6px;
         }
+
+body {
+    touch-action: none;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+#productTable {
+    touch-action: pan-y;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    height: calc(100vh - [your header height]px); /* Adjust based on your header height */
+}
     </style>
   </head>
   <body>
