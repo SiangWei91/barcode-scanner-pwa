@@ -25,13 +25,7 @@ h1 {
     margin-bottom: 20px;
 }
 
-#barcodeInput {
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-}
+
 
 table {
     width: 100%;
@@ -189,22 +183,23 @@ button[onclick="refreshApp"]:hover {
         to {opacity: 0;}
       }
 
-            .floating-input {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80%;
-        max-width: 300px;
-        padding: 15px;
-        background-color: #fff;
-        border: 2px solid #3498db;
-        border-radius: 25px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        z-index: 1000;
-        font-size: 16px;
-        text-align: center;
-      }
+.floating-input {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 300px;
+    padding: 15px;
+    background-color: #fff;
+    border: 2px solid #3498db;
+    border-radius: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+    font-size: 16px;
+    text-align: center;
+    opacity: 0;  /* Just add this line to make it invisible but still focusable */
+}
 
       .floating-input:focus {
         outline: none;
