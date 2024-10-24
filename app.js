@@ -64,26 +64,19 @@ function initScanner() {
     console.log('Scanned barcode:', barcode);
     const product = productList.find(p => p.barcode === barcode);
     if (product) {
-        console.log('Found product:', product);
-        const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
-        if (quantityInput) {
-            // Get the current scroll position
-            const currentScroll = window.scrollY;
-            
-            // Scroll the quantity input into view (if needed) without centering
-            quantityInput.scrollIntoView({ block: "nearest" });
-            
-            // Focus on the quantity input
-            quantityInput.focus();
-            quantityInput.select();
-            console.log('Focused on quantity input');
-        }
+      console.log('Found product:', product);
+      const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
+      if (quantityInput) {
+        quantityInput.focus();
+        quantityInput.select();
+        console.log('Focused on quantity input');
+      }
     } else {
-        showToast('Product not found');
-        barcodeInput.focus();
+      showToast('Product not found');
+      barcodeInput.focus();
     }
     barcodeInput.value = ''; // Clear the input for the next scan
-}
+  }
   // Listen for the 'input' event on the barcode input field
   barcodeInput.addEventListener('input', function() {
     const barcode = this.value.trim();
