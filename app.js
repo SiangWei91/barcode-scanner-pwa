@@ -50,13 +50,22 @@ function initScanner() {
   });
 
   // Add focus event listeners to all quantity inputs
-  const quantityInputs = document.querySelectorAll('input[type="number"]');
+const quantityInputs = document.querySelectorAll('input[type="number"]');
+let lastScrollPosition = 0;  // Store the last scroll position
+
 quantityInputs.forEach(input => {
     input.addEventListener('focus', function() {
-        const currentScroll = window.scrollY;  // Store current scroll position
+        lastScrollPosition = window.scrollY;  // Save scroll position when quantity input gets focus
+        
+        // Set up an interval to maintain scroll position
+        const scrollInterval = setInterval(() => {
+            window.scrollTo(0, lastScrollPosition);
+        }, 100);  // Check and restore scroll position every 100ms
+        
         setTimeout(() => {
             barcodeInput.focus();
-            window.scrollTo(0, currentScroll);  // Restore scroll position after focus
+            window.scrollTo(0, lastScrollPosition);  // Ensure scroll position after timeout
+            clearInterval(scrollInterval);  // Clean up the interval
         }, 5000);
     });
 });
