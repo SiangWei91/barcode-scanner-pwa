@@ -56,7 +56,7 @@ function initScanner() {
       setTimeout(() => {
         barcodeInput.focus();
         console.log('Auto-returned focus to barcode input');
-      }, 5000);
+      }, 3000);
     });
   });
 
