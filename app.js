@@ -237,7 +237,7 @@ setInterval(updateDateTimeDisplay, 1000);
 window.addEventListener('load', () => {
     initScanner();
     updateDateTimeDisplay();
-    initPDASettings();
+    preventWebRefresh();
 });
 
 if ('serviceWorker' in navigator) {
@@ -260,31 +260,19 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-function initPDASettings() {
-    // Prevent default touch behaviors
-    document.addEventListener('touchmove', function(e) {
-        e.preventDefault();
-    }, { passive: false });
-
-    // Enable scrolling only for the product table
-    const productTable = document.getElementById('productTable');
-    let startY;
-
-    productTable.addEventListener('touchstart', function(e) {
+function preventWebRefresh() {
+    let startY = 0;
+    
+    document.addEventListener('touchstart', function(e) {
         startY = e.touches[0].pageY;
-        e.stopPropagation();
     }, { passive: true });
-
-    productTable.addEventListener('touchmove', function(e) {
-        e.stopPropagation();
+    
+    document.addEventListener('touchmove', function(e) {
+        const y = e.touches[0].pageY;
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
         
-        // Check if we're at the top or bottom of the scrollable area
-        const isAtTop = this.scrollTop === 0;
-        const isAtBottom = this.scrollHeight - this.scrollTop === this.clientHeight;
-        const touchY = e.touches[0].pageY;
-        
-        // Prevent overscroll but allow normal scrolling
-        if ((isAtTop && touchY > startY) || (isAtBottom && touchY < startY)) {
+        // Only prevent default when we're at the top of the page and trying to scroll up
+        if (scrollTop === 0 && y > startY) {
             e.preventDefault();
         }
     }, { passive: false });
