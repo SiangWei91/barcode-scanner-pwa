@@ -33,14 +33,30 @@ const productList = [
   { barcode: "40342", itemCode: "40342", name: "VP皇帝蟹丸 VP KING CRAB BALL", packingSize: "190g" }
 ];
 
+function initializeProducts() {
+    // Store the master product list in localStorage when online
+    if (navigator.onLine) {
+        localStorage.setItem('masterProductList', JSON.stringify(productList));
+    }
+    
+    // Always use the stored product list if available
+    const storedProducts = localStorage.getItem('masterProductList');
+    if (storedProducts) {
+        return JSON.parse(storedProducts);
+    }
+    return productList; // Fallback to default list
+}
+
 function initScanner() {
   const barcodeInput = document.getElementById('barcodeInput');
   const stockCheckBy = document.getElementById('stockCheckBy');
   const productTable = document.getElementById('productTable');
+  
+  const currentProducts = initializeProducts(); // You have this line correct
 
-  // Populate the table with product data
+  // Change this part - use currentProducts instead of productList
   const tbody = productTable.getElementsByTagName('tbody')[0];
-  productList.forEach(product => {
+  currentProducts.forEach(product => {  // Changed from productList to currentProducts
     const row = tbody.insertRow();
     row.innerHTML = `
       <td>${product.name}</td>
@@ -62,7 +78,7 @@ function initScanner() {
 
   function handleBarcodeScan(barcode) {
     console.log('Scanned barcode:', barcode);
-    const product = productList.find(p => p.barcode === barcode);
+    const product = currentProducts.find(p => p.barcode === barcode); // Changed from productList to currentProducts
     if (product) {
       console.log('Found product:', product);
       const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
@@ -75,8 +91,9 @@ function initScanner() {
       showToast('Product not found');
       barcodeInput.focus();
     }
-    barcodeInput.value = ''; // Clear the input for the next scan
+    barcodeInput.value = '';
   }
+  
   // Listen for the 'input' event on the barcode input field
   barcodeInput.addEventListener('input', function() {
     const barcode = this.value.trim();
@@ -107,6 +124,7 @@ function initScanner() {
 }
 
 function submitQuantities(sheetName) {
+  const currentProducts = initializeProducts(); // Add this line
   const quantities = [];
   const inputs = document.querySelectorAll('input[type="number"]');
   const currentDate = formatDate(new Date());
@@ -122,7 +140,7 @@ function submitQuantities(sheetName) {
     const barcode = input.getAttribute('data-barcode');
     const quantity = input.value.trim();
     if (quantity !== '') {
-      const product = productList.find(p => p.barcode === barcode);
+      const product = currentProducts.find(p => p.barcode === barcode); // Change this line from productList to currentProducts
       if (product) {
         quantities.push({
           Date: currentDate,
@@ -257,6 +275,10 @@ document.addEventListener('visibilitychange', () => {
   if (!document.hidden) {
     checkForUpdates();
   }
+});
+
+window.addEventListener('online', () => {
+    localStorage.setItem('masterProductList', JSON.stringify(productList));
 });
 
 function preventWebRefresh() {
