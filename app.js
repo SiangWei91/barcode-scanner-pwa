@@ -1,62 +1,124 @@
-// Updated product list
-const productList = [
-  { barcode: "40401", itemCode: "40401", name: "大鱼香 FISH NGOH HIANG (L)", packingSize: "20's" },
-  { barcode: "40402", itemCode: "40402", name: "小鱼香 FISH NGOH HIANG (S)", packingSize: "50's" },
-  { barcode: "40410", itemCode: "40410", name: "大鸡香 CHICKEN NGOH HIANG", packingSize: "20's" },
-  { barcode: "40412", itemCode: "40412", name: "鸡粒 CHICKEN NGOH HIANG BALL", packingSize: "50's" },
-  { barcode: "40430", itemCode: "40430", name: "炸云吞 FRIED WANTON", packingSize: "50's" },
-  { barcode: "40440", itemCode: "40440", name: "扁香 FLAT NGOH HIANG", packingSize: "10's" },
-  { barcode: "40501", itemCode: "40501", name: "大鱼香 FISH NGOH HIANG (L)", packingSize: "3's" },
-  { barcode: "40502", itemCode: "40502", name: "小鱼香 FISH NGOH HIANG (S)", packingSize: "8's" },
-  { barcode: "40510", itemCode: "40510", name: "大五香 NGOH HIANG (L)", packingSize: "3's" },
-  { barcode: "40512", itemCode: "40512", name: "五香粒 NGOH HIANG BALL", packingSize: "8's" },
-  { barcode: "40520", itemCode: "40520", name: "炸云吞 FRIED WANTON", packingSize: "8s" },
-  { barcode: "85008", itemCode: "85008", name: "PC大鱼香 PC FISH NGOH HIANG (L)", packingSize: "3's" },
-  { barcode: "85009", itemCode: "85009", name: "PC小鱼香 PC FISH NGOH HIANG (S)", packingSize: "8's" },
-  { barcode: "40423", itemCode: "40423", name: "大鸡香 NGOH HIANG (L)", packingSize: "10s" },
-  { barcode: "40340", itemCode: "40340", name: "VP 蟹味丸 VP FLAVOURED CRAB BALL", packingSize: "170g" },
-  { barcode: "40341", itemCode: "40341", name: "VP 大鸡香 VP CHICKEN NGOH HIANG (L)", packingSize: "230g" },
-  { barcode: "40346", itemCode: "40346", name: "VP鱼豆腐 FISH TOFU", packingSize: "160g" },
-  { barcode: "40347", itemCode: "40347", name: "VP扁香 FLAT NGOH HIANG", packingSize: "190g" },
-  { barcode: "40345", itemCode: "40345", name: "VP海鲜粒 SEAFOOD BALL", packingSize: "200g" },
-  { barcode: "40348", itemCode: "40348", name: "VP鸡香粒 CHICKEN NGOH HIANG BALL", packingSize: "200g" },
-  { barcode: "40349", itemCode: "40349", name: "VP小鱼香 VP FISH NGOH HIANG (S)", packingSize: "200g" },
-  { barcode: "40343", itemCode: "40343", name: "VP香菇丸 MUSHROOM BALL", packingSize: "120g" },
-  { barcode: "70002", itemCode: "70002", name: "黄金豆香片 TASTY BITES SOY FISH PILLOW", packingSize: "150g" },
-  { barcode: "40356", itemCode: "40356", name: "VP大饼 FISH CAKE L", packingSize: "185g" },
-  { barcode: "40357", itemCode: "40357", name: "VP小西刀 SAI DOU FISH CAKE (S)", packingSize: "210g" },
-  { barcode: "40358", itemCode: "40358", name: "VP正西刀小果 SAI DOU PILLOW FISH CAKE (S)", packingSize: "230g" },
-  { barcode: "40359", itemCode: "40359", name: "VP炸鱼丸 FRIED FISH BALL", packingSize: "270g" },
-  { barcode: "40339", itemCode: "40339", name: "VP切果片 VP SLICED FISH CAKE", packingSize: "200g" },
-  { barcode: "40337", itemCode: "40337", name: "VP蟹味柳 VP KANIMI CHUNK", packingSize: "80g" },
-  { barcode: "40338", itemCode: "40338", name: "VP墨鱼丸 VP CUTTLEFISH BALL", packingSize: "190g" },
-  { barcode: "40342", itemCode: "40342", name: "VP皇帝蟹丸 VP KING CRAB BALL", packingSize: "190g" }
-];
+// ============================================================================
+// CR5c Stock Take PWA
+// Product list comes from Supabase (list_key='cr5c-stock-take').
+// Staff list is shared with CR3 (list_key='cr3-stock-take').
+// Lists cached in localStorage; re-fetched only when user clicks the title (no quantities entered).
+// ============================================================================
 
-function initializeProducts() {
-    // Store the master product list in localStorage when online
-    if (navigator.onLine) {
-        localStorage.setItem('masterProductList', JSON.stringify(productList));
-    }
-    
-    // Always use the stored product list if available
-    const storedProducts = localStorage.getItem('masterProductList');
-    if (storedProducts) {
-        return JSON.parse(storedProducts);
-    }
-    return productList; // Fallback to default list
+const SUPABASE_URL = 'https://jbpvqlvlokvqpkulisxi.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpicHZxbHZsb2t2cXBrdWxpc3hpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNTE3NzYsImV4cCI6MjA3NTYyNzc3Nn0.cwCoHFCy3K_HdTIIk_jJUCgMXIdub2HbnxqTETBKans';
+const PRODUCT_LIST_KEY = 'cr5c-stock-take';
+const STAFF_LIST_KEY = 'cr3-stock-take';
+const STORAGE_PRODUCTS = 'masterProductList_cr5c';
+const STORAGE_STAFF = 'masterStaffList_cr5c';
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function fetchProductsFromDB() {
+  const { data, error } = await supabaseClient
+    .from('app_product_list_items')
+    .select('barcode, item_code, name, packing_size')
+    .eq('list_key', PRODUCT_LIST_KEY)
+    .order('sort_order');
+  if (error) throw error;
+  return data.map(r => ({
+    barcode: r.barcode,
+    itemCode: r.item_code,
+    name: r.name,
+    packingSize: r.packing_size || ''
+  }));
+}
+
+async function fetchStaffFromDB() {
+  const { data, error } = await supabaseClient
+    .from('app_staff_lists')
+    .select('name')
+    .eq('list_key', STAFF_LIST_KEY)
+    .order('sort_order');
+  if (error) throw error;
+  return data.map(r => r.name);
+}
+
+async function ensureDataLoaded() {
+  const cachedProducts = localStorage.getItem(STORAGE_PRODUCTS);
+  const cachedStaff = localStorage.getItem(STORAGE_STAFF);
+  if (cachedProducts && cachedStaff) return;
+
+  if (!navigator.onLine) {
+    showToast('需要联网下载列表 Need internet to download list');
+    return;
+  }
+
+  try {
+    const [products, staff] = await Promise.all([fetchProductsFromDB(), fetchStaffFromDB()]);
+    localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(products));
+    localStorage.setItem(STORAGE_STAFF, JSON.stringify(staff));
+  } catch (e) {
+    console.error('Failed to load lists from DB:', e);
+    showToast('下载失败 Failed to download lists');
+  }
+}
+
+function getProducts() {
+  const cached = localStorage.getItem(STORAGE_PRODUCTS);
+  return cached ? JSON.parse(cached) : [];
+}
+
+function getStaff() {
+  const cached = localStorage.getItem(STORAGE_STAFF);
+  return cached ? JSON.parse(cached) : [];
+}
+
+function hasEnteredQuantities() {
+  const inputs = document.querySelectorAll('input[type="number"]');
+  for (const input of inputs) {
+    if (input.value.trim() !== '') return true;
+  }
+  return false;
+}
+
+async function onTitleClick() {
+  if (hasEnteredQuantities()) return;
+  if (!navigator.onLine) {
+    showToast('离线状态 Cannot update while offline');
+    return;
+  }
+  if (!confirm('确认从数据库更新列表? Reload list from database?')) return;
+  showLoadingOverlay();
+  try {
+    const [products, staff] = await Promise.all([fetchProductsFromDB(), fetchStaffFromDB()]);
+    localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(products));
+    localStorage.setItem(STORAGE_STAFF, JSON.stringify(staff));
+    hideLoadingOverlay();
+    showToast('列表已更新 List updated');
+    setTimeout(() => location.reload(), 800);
+  } catch (e) {
+    hideLoadingOverlay();
+    console.error('Update failed:', e);
+    showToast('更新失败 Update failed');
+  }
+}
+
+function populateStaffDropdown() {
+  const select = document.getElementById('stockCheckBy');
+  const staff = getStaff();
+  staff.forEach(name => {
+    const option = document.createElement('option');
+    option.value = name;
+    option.textContent = name === 'New Worker' ? '*新员工 New Worker' : name;
+    select.appendChild(option);
+  });
 }
 
 function initScanner() {
   const barcodeInput = document.getElementById('barcodeInput');
   const stockCheckBy = document.getElementById('stockCheckBy');
   const productTable = document.getElementById('productTable');
-  
-  const currentProducts = initializeProducts(); // You have this line correct
 
-  // Change this part - use currentProducts instead of productList
+  const currentProducts = getProducts();
+
   const tbody = productTable.getElementsByTagName('tbody')[0];
-  currentProducts.forEach(product => {  // Changed from productList to currentProducts
+  currentProducts.forEach(product => {
     const row = tbody.insertRow();
     row.innerHTML = `
       <td>${product.name}</td>
@@ -65,27 +127,22 @@ function initScanner() {
     `;
   });
 
-  // Add focus event listeners to all quantity inputs
   const quantityInputs = document.querySelectorAll('input[type="number"]');
   quantityInputs.forEach(input => {
     input.addEventListener('focus', function() {
       setTimeout(() => {
         barcodeInput.focus();
-        console.log('Auto-returned focus to barcode input');
       }, 5000);
     });
   });
 
   function handleBarcodeScan(barcode) {
-    console.log('Scanned barcode:', barcode);
-    const product = currentProducts.find(p => p.barcode === barcode); // Changed from productList to currentProducts
+    const product = currentProducts.find(p => p.barcode === barcode);
     if (product) {
-      console.log('Found product:', product);
       const quantityInput = document.querySelector(`input[data-barcode="${barcode}"]`);
       if (quantityInput) {
         quantityInput.focus();
         quantityInput.select();
-        console.log('Focused on quantity input');
       }
     } else {
       showToast('Product not found');
@@ -93,54 +150,47 @@ function initScanner() {
     }
     barcodeInput.value = '';
   }
-  
-  // Listen for the 'input' event on the barcode input field
+
   barcodeInput.addEventListener('input', function() {
     const barcode = this.value.trim();
-    if (barcode) {
-      handleBarcodeScan(barcode);
-    }
+    if (barcode) handleBarcodeScan(barcode);
   });
 
-  // Prevent the dropdown from interfering with scanning
   stockCheckBy.addEventListener('focus', function() {
-    barcodeInput.blur(); // Remove focus from barcode input when dropdown is focused
+    barcodeInput.blur();
   });
 
   stockCheckBy.addEventListener('blur', function() {
-    // Small delay to allow for dropdown selection before refocusing
     setTimeout(() => barcodeInput.focus(), 100);
   });
 
-  // Add click event listener to the table to refocus on barcode input
   productTable.addEventListener('click', function(event) {
     if (event.target.tagName !== 'INPUT') {
       barcodeInput.focus();
     }
   });
 
-  // Ensure barcode input is focused when the page loads
   barcodeInput.focus();
 }
 
 function submitQuantities(sheetName) {
-  const currentProducts = initializeProducts(); // Add this line
+  const currentProducts = getProducts();
   const quantities = [];
   const inputs = document.querySelectorAll('input[type="number"]');
   const currentDate = formatDate(new Date());
   const currentTime = formatTime(new Date());
   const stockCheckBy = document.getElementById('stockCheckBy').value;
-  
+
   if (!stockCheckBy) {
     showToast('Please select who is performing the stock check');
     return;
   }
-  
+
   inputs.forEach(input => {
     const barcode = input.getAttribute('data-barcode');
     const quantity = input.value.trim();
     if (quantity !== '') {
-      const product = currentProducts.find(p => p.barcode === barcode); // Change this line from productList to currentProducts
+      const product = currentProducts.find(p => p.barcode === barcode);
       if (product) {
         quantities.push({
           Date: currentDate,
@@ -154,7 +204,7 @@ function submitQuantities(sheetName) {
       }
     }
   });
-  
+
   if (quantities.length > 0) {
     showLoadingOverlay();
     sendToGoogleScript(quantities, sheetName);
@@ -167,12 +217,9 @@ function refreshApp() {
   const barcodeInput = document.getElementById('barcodeInput');
   barcodeInput.value = '';
   const inputs = document.querySelectorAll('input[type="number"]');
-  inputs.forEach(input => {
-    input.value = '';
-  });
-  document.getElementById('stockCheckBy').value = ''; // Reset the dropdown
-  console.log('App refreshed');
-  barcodeInput.focus(); // Refocus on the barcode input after refresh
+  inputs.forEach(input => { input.value = ''; });
+  document.getElementById('stockCheckBy').value = '';
+  barcodeInput.focus();
 }
 
 function formatDate(date) {
@@ -187,7 +234,7 @@ function formatTime(date) {
   const minutes = date.getMinutes().toString().padStart(2, '0');
   const ampm = hours >= 12 ? 'PM' : 'AM';
   hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
+  hours = hours ? hours : 12;
   return `${hours}:${minutes} ${ampm}`;
 }
 
@@ -195,14 +242,8 @@ function updateDateTimeDisplay() {
   const dateDisplay = document.getElementById('currentDate');
   const timeDisplay = document.getElementById('currentTime');
   const now = new Date();
-  
-  if (dateDisplay) {
-    dateDisplay.textContent = formatDate(now);
-  }
-  
-  if (timeDisplay) {
-    timeDisplay.textContent = formatTime(now);
-  }
+  if (dateDisplay) dateDisplay.textContent = formatDate(now);
+  if (timeDisplay) timeDisplay.textContent = formatTime(now);
 }
 
 function showLoadingOverlay() {
@@ -222,18 +263,12 @@ function showToast(message) {
 
 function sendToGoogleScript(data, sheetName) {
   const url = 'https://script.google.com/macros/s/AKfycbxtkp0U6W1YL9ixCfFERGAkgVNnhatwhGoBkLSWBfg0BhtvFlru6tz2Lc8IpZTIQHLPzA/exec';
-  
-  const payload = {
-    data: data,
-    sheetName: sheetName
-  };
+  const payload = { data: data, sheetName: sheetName };
 
   fetch(url, {
     method: 'POST',
     mode: 'no-cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   })
   .then(() => {
@@ -248,13 +283,14 @@ function sendToGoogleScript(data, sheetName) {
   });
 }
 
-// Update the date and time every second
 setInterval(updateDateTimeDisplay, 1000);
 
-window.addEventListener('load', () => {
-    initScanner();
-    updateDateTimeDisplay();
-    preventWebRefresh();
+window.addEventListener('load', async () => {
+  await ensureDataLoaded();
+  populateStaffDropdown();
+  initScanner();
+  updateDateTimeDisplay();
+  preventWebRefresh();
 });
 
 if ('serviceWorker' in navigator) {
@@ -272,29 +308,19 @@ function checkForUpdates() {
 }
 
 document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) {
-    checkForUpdates();
-  }
-});
-
-window.addEventListener('online', () => {
-    localStorage.setItem('masterProductList', JSON.stringify(productList));
+  if (!document.hidden) checkForUpdates();
 });
 
 function preventWebRefresh() {
-    let startY = 0;
-    
-    document.addEventListener('touchstart', function(e) {
-        startY = e.touches[0].pageY;
-    }, { passive: true });
-    
-    document.addEventListener('touchmove', function(e) {
-        const y = e.touches[0].pageY;
-        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-        
-        // Only prevent default when we're at the top of the page and trying to scroll up
-        if (scrollTop === 0 && y > startY) {
-            e.preventDefault();
-        }
-    }, { passive: false });
+  let startY = 0;
+  document.addEventListener('touchstart', function(e) {
+    startY = e.touches[0].pageY;
+  }, { passive: true });
+  document.addEventListener('touchmove', function(e) {
+    const y = e.touches[0].pageY;
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop === 0 && y > startY) {
+      e.preventDefault();
+    }
+  }, { passive: false });
 }
